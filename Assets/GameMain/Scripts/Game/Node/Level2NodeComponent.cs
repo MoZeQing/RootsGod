@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class Level1NodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class Level2NodeComponent : BaseNodeComponent, IPointerDownHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
@@ -17,7 +17,7 @@ namespace GameMain
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
-            m_NodeData.NodeType = NodeType.Level1Node;
+            m_NodeData.NodeType = NodeType.Level2Node;
             m_NodeData.NodeState = NodeState.InActive;
             m_NodeData.Select = false;
             mFrame.SetActive(m_NodeData.Select);
@@ -42,28 +42,50 @@ namespace GameMain
 
         private void Update()
         {
+            if (m_IsAdd)
+            {
+                return;
+            }
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
                 m_NodeData.NodeState = NodeState.InActive;
+                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-(2 - m_NodeData.Income) * 2));
+                m_IsAdd = true;
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
-            //Debug.Log(m_NodeData.Total);
-            if (m_NodeData.NodeState != NodeState.Active)
-                return;
 
-            if (!m_IsAdd)
+            if (m_NodeData.Income < 2)
             {
-                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
-                m_IsAdd = true;
+                m_NodeData.Total -= (2 - m_NodeData.Income) * Time.deltaTime;
             }
-            if (m_NodeData.Total < m_NodeData.Income)
+            // if (m_NodeData.NodeState != NodeState.Active)
+            //     return;
+            //
+            // if (!m_IsAdd)
+            // {
+            //     m_NodeData.Income = 2;
+            //     m_IsAdd = true;
+            // }
+            // if (m_NodeData.Total < m_NodeData.Income)
+            // {
+            //     //GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+            //     return;
+            // }
+            // m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
+        }
+
+        private void AddParent(object sender, GameEventArgs e)
+        {
+            AddParentNodeEventArgs ne = (AddParentNodeEventArgs)e;
+            for (int i = 0; i < m_NodeData.ParentNodes.Count; i++)
             {
-                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
-                return;
+                if (m_NodeData.ParentNodes[i].NodeType == NodeType.Level2To1Node)
+                {
+                    
+                }
             }
-            m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
         }
         
         private void SetSelect(object sender, GameEventArgs e)

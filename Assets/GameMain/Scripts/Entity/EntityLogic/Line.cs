@@ -57,7 +57,7 @@ namespace GameMain
                     m_LineRenderer.SetPosition(1,m_MousePositionInWorld);
                     var distance = Vector3.Distance(m_LineRenderer.GetPosition(0),
                         m_LineRenderer.GetPosition(1));
-                    Debug.Log(distance);
+                    //Debug.Log(distance);
                     var cost = (Math.Round(distance,1)) * UCS.BloodPerUnit;
                     if (GameEntry.Utils.Blood >= cost)
                     {

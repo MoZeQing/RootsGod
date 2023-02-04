@@ -64,7 +64,7 @@ namespace GameMain
         /// </summary>
         public bool Connectable { get; set; }
 
-        public int Total
+        public float Total
         {
             get;
             set;
@@ -76,7 +76,7 @@ namespace GameMain
             set;
         }
 
-        public int Cost
+        public int CostPersecond
         {
             get;
             set;
