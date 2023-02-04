@@ -84,6 +84,20 @@ namespace GameMain
                         {
                             GameEntry.Utils.LinePairs.Add(hit.transform,true);
                         }
+                        
+                        var selfNodeData = m_Data.Self.GetComponent<NodeData>();
+                        var hitNodeData = hit.transform.GetComponent<NodeData>();
+                        hitNodeData.NodeState = NodeState.Active;
+                        if (!selfNodeData.ChildNodes.Contains(hitNodeData))
+                        {
+                            selfNodeData.ChildNodes.Add(hitNodeData);
+                            GameEntry.Event.FireNow(this,AddChildNodeEventArgs.Create(selfNodeData));
+                        }
+                        if (!hitNodeData.ParentNodes.Contains(selfNodeData))
+                        {
+                            hitNodeData.ParentNodes.Add(selfNodeData);
+                            GameEntry.Event.FireNow(this,AddParentNodeEventArgs.Create(hitNodeData));
+                        }
                         GameEntry.Utils.Blood -= (int)cost;
                     }
                     else

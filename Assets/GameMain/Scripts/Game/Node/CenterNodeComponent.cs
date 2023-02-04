@@ -12,19 +12,6 @@ namespace GameMain
     {
         [SerializeField] private int mCostValue = 0;
         private NodeData m_NodeData = null;
-        private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private int m_LineID = 0;
-        public override List<BaseNodeComponent> ParentNodes
-        {
-            get { return m_ParentNodes; }
-        }
-
-        private List<BaseNodeComponent> m_ChildNodes = new List<BaseNodeComponent>();
-
-        public override List<BaseNodeComponent> ChildNodes
-        {
-            get { return m_ChildNodes; }
-        }
 
         private void Start()
         {
@@ -32,7 +19,7 @@ namespace GameMain
             m_NodeData.NodeType = NodeType.Level1Node;
             m_NodeData.NodeState = NodeState.InActive;
             m_NodeData.Select = false;
-            m_NodeData.Cost = false;
+            m_NodeData.Costable = false;
             m_NodeData.Movable = false;
             m_NodeData.Connectable = true;
         }
@@ -80,7 +67,6 @@ namespace GameMain
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
-                    m_LineID = lineData.Id;
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }

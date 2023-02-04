@@ -13,24 +13,7 @@ namespace GameMain
         [SerializeField] private GameObject mFrame = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private int m_LineID = 0;
-        public override List<BaseNodeComponent> ParentNodes
-        {
-            get
-            {
-                return m_ParentNodes;
-            }
-        }
-        private List<BaseNodeComponent> m_ChildNodes = new List<BaseNodeComponent>();
-
-        public override List<BaseNodeComponent> ChildNodes
-        {
-            get
-            {
-                return m_ChildNodes;
-            }
-        }
-
+        private bool m_IsAdd = false;
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
@@ -38,9 +21,13 @@ namespace GameMain
             m_NodeData.NodeState = NodeState.InActive;
             m_NodeData.Select = false;
             mFrame.SetActive(m_NodeData.Select);
-            m_NodeData.Cost = false;
+            m_NodeData.Costable = false;
             m_NodeData.Movable = false;
             m_NodeData.Connectable = true;
+            m_NodeData.Total = 100;
+            m_NodeData.Income = 2;
+
+            m_IsAdd = false;
         }
         
         private void OnEnable()
@@ -55,7 +42,27 @@ namespace GameMain
 
         private void Update()
         {
-            
+            if (m_NodeData.Total <= 0)
+            {
+                m_NodeData.Total = 0;
+                m_NodeData.NodeState = NodeState.InActive;
+                return;
+            }
+            m_NodeData.Total -= m_NodeData.Cost;
+            if (m_NodeData.NodeState != NodeState.Active)
+                return;
+
+            if (!m_IsAdd)
+            {
+                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
+                m_IsAdd = true;
+            }
+            if (m_NodeData.Total < m_NodeData.Income)
+            {
+                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+                return;
+            }
+            m_NodeData.Total -= m_NodeData.Income;
         }
         
         private void SetSelect(object sender, GameEventArgs e)
@@ -95,7 +102,6 @@ namespace GameMain
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
-                    m_LineID = lineData.Id;
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }

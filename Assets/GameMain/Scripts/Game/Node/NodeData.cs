@@ -52,7 +52,7 @@ namespace GameMain
         /// <summary>
         /// 是否消耗资源
         /// </summary>
-        public bool Cost { get; set; }
+        public bool Costable { get; set; }
 
         /// <summary>
         /// 是否可移动
@@ -63,5 +63,33 @@ namespace GameMain
         /// 是否可连接
         /// </summary>
         public bool Connectable { get; set; }
+
+        public int Total
+        {
+            get;
+            set;
+        }
+        
+        public int Income
+        {
+            get;
+            set;
+        }
+
+        public int Cost
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 父节点列表
+        /// </summary>
+        public List<NodeData> ParentNodes = new List<NodeData>();
+
+        /// <summary>
+        /// 子节点列表
+        /// </summary>
+        public List<NodeData> ChildNodes = new List<NodeData>();
     }
 }
