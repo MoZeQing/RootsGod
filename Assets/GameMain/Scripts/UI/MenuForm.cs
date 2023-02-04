@@ -1,10 +1,4 @@
-﻿//------------------------------------------------------------
-// Game Framework
-// Copyright © 2013-2021 Jiang Yin. All rights reserved.
-// Homepage: https://gameframework.cn/
-// Feedback: mailto:ellan@gameframework.cn
-//------------------------------------------------------------
-
+﻿
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -25,13 +19,6 @@ namespace GameMain
         public void OnQuitButtonClick()
         {
             UnityGameFramework.Runtime.GameEntry.Shutdown(ShutdownType.Quit);
-            // GameEntry.UI.OpenDialog(new DialogParams()
-            // {
-            //     Mode = 2,
-            //     Title = GameEntry.Localization.GetString("AskQuitGame.Title"),
-            //     Message = GameEntry.Localization.GetString("AskQuitGame.Message"),
-            //     OnClickConfirm = delegate (object userData) { UnityGameFramework.Runtime.GameEntry.Shutdown(ShutdownType.Quit); },
-            // });
         }
 
 #if UNITY_2017_3_OR_NEWER

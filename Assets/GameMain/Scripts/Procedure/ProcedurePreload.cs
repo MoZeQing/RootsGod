@@ -25,6 +25,7 @@ namespace GameMain
             "Sound",
             "UIForm",
             "UISound",
+            "GameState",
         };
 
         private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();

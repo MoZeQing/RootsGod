@@ -37,7 +37,6 @@ namespace GameMain
             base.OnLeave(procedureOwner, isShutdown);
 
             GameEntry.Event.Unsubscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);
-
             if (m_MenuForm != null)
             {
                 m_MenuForm.Close(isShutdown);

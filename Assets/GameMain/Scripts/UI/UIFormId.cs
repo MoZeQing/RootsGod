@@ -25,9 +25,9 @@ namespace GameMain
         MenuForm = 100,
 
         /// <summary>
-        /// 设置。
+        /// 游戏。
         /// </summary>
-        SettingForm = 101,
+        GameForm = 101,
 
         /// <summary>
         /// 关于。

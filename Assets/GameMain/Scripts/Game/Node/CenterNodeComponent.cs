@@ -7,13 +7,24 @@ using UnityEngine;
 
 public class CenterNodeComponent : BaseNodeComponent
 {
-    public override NodeType NodeType { get; set; }
-    public override NodeState NodeState { get; set; }
-    public override bool Cost { get; set; }
-    public override bool Movable { get; set; }
-    public override bool Connectable { get; set; }
-    public override List<BaseNodeComponent> ParentNodes { get; set; }
-    public override List<BaseNodeComponent> ChildNodes { get; set; }
+    private int m_CostValue = 0;
+    private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
+    public override List<BaseNodeComponent> ParentNodes
+    {
+        get
+        {
+            return m_ParentNodes;
+        }
+    }
+    private List<BaseNodeComponent> m_ChildNodes = new List<BaseNodeComponent>();
+
+    public override List<BaseNodeComponent> ChildNodes
+    {
+        get
+        {
+            return m_ChildNodes;
+        }
+    }
 
     private int m_AllOutput = 0;
     
@@ -21,23 +32,34 @@ public class CenterNodeComponent : BaseNodeComponent
     {
         NodeType = NodeType.CenterNode;
         NodeState = NodeState.Active;
-        Cost = true;
+        m_CostValue = 0;
+        Select = false;
+        Cost = false;
         Movable = false;
+        Connectable = true;
     }
 
     private void OnEnable()
     {
-        GameEntry.Event.Subscribe(AddOutputEventArgs.EventId,AddOutput);
+        //GameEntry.Event.Subscribe(AddOutputEventArgs.EventId,AddOutput);
+        //GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
     }
 
     private void OnDisable()
     {
-        GameEntry.Event.Unsubscribe(AddOutputEventArgs.EventId,AddOutput);
+        //GameEntry.Event.Unsubscribe(AddOutputEventArgs.EventId,AddOutput);
+        //GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
     }
 
     private void AddOutput(object sender, GameEventArgs e)
     {
-        AddOutputEventArgs ne = (AddOutputEventArgs)e;
-        m_AllOutput += ne.Output;
+        AddIncomeEventArgs ne = (AddIncomeEventArgs)e;
+        m_AllOutput += ne.Income;
+    }
+
+    private void SetSelect(object sender, GameEventArgs e)
+    {
+        SetSelectEventArgs ne = (SetSelectEventArgs)e;
+        Select = ne.Select;
     }
 }

@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace GameMain
 {
-    public class AddOutputEventArgs : GameEventArgs
+    public class ChangeProcedureStateEventArgs : GameEventArgs
     {
-        public static readonly int EventId = typeof(AddOutputEventArgs).GetHashCode();
+        public static readonly int EventId = typeof(ChangeProcedureStateEventArgs).GetHashCode();
         
         public override int Id
         {
@@ -18,16 +18,16 @@ namespace GameMain
             }
         }
 
-        public int Output
+        public State State
         {
             get;
             set;
         }
 
-        public static AddOutputEventArgs Create(int output)
+        public static ChangeProcedureStateEventArgs Create(State state)
         {
-            AddOutputEventArgs args = ReferencePool.Acquire<AddOutputEventArgs>();
-            args.Output = output;
+            ChangeProcedureStateEventArgs args = ReferencePool.Acquire<ChangeProcedureStateEventArgs>();
+            args.State = state;
             return args;
         }
         
