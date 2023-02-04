@@ -40,10 +40,10 @@ namespace GameMain
             entityComponent.AttachEntity(entity.Entity, ownerId, parentTransformPath, userData);
         }
 
-        // public static void ShowMyAircraft(this EntityComponent entityComponent, MyAircraftData data)
-        // {
-        //     entityComponent.ShowEntity(typeof(MyAircraft), "Aircraft", Constant.AssetPriority.MyAircraftAsset, data);
-        // }
+        public static void ShowLine(this EntityComponent entityComponent, LineData data)
+        {
+            entityComponent.ShowEntity(typeof(Line), "Line", Constant.AssetPriority.MyAircraftAsset, data);
+        }
 
         public static void ShowEffect(this EntityComponent entityComponent, EffectData data)
         {

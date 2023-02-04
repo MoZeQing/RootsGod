@@ -26,10 +26,17 @@ namespace GameMain
             private set;
         }
 
+        public static UtilsComponent Utils
+        {
+            get;
+            private set;
+        }
+
         private static void InitCustomComponents()
         {
             BuiltinData = UnityGameFramework.Runtime.GameEntry.GetComponent<BuiltinDataComponent>();
             Timer = UnityGameFramework.Runtime.GameEntry.GetComponent<TimerComponent>();
+            Utils = UnityGameFramework.Runtime.GameEntry.GetComponent<UtilsComponent>();
         }
     }
 }

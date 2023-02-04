@@ -11,11 +11,11 @@ namespace GameMain
 {
     public class GameForm : UGuiForm
     {
-        [SerializeField] private int mBlood = 0;
         [SerializeField] private int mCurGameState = 0;
         [SerializeField] private float mTargetGameState = 0;
         [SerializeField] private int mTargetTime = 30;
         [SerializeField] private Text mBloodText = null;
+        [SerializeField] private Text mStateText = null;
         [SerializeField] private Image mCountProgress = null;
 
         private float m_CurTime = 0;
@@ -27,6 +27,7 @@ namespace GameMain
             GameEntry.Event.Subscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Subscribe(AddIncomeEventArgs.EventId,AddIncome);
             mCurGameState = 0;
+            mStateText.text = mCurGameState + "阶段";
             SetGameState();
             UpdateTask().Coroutine();
         }
@@ -46,18 +47,22 @@ namespace GameMain
 
         private void UpdateUI()
         {
-            mBloodText.text = mBlood + " / " + m_TargetBlood;
+            mBloodText.text = GameEntry.Utils.Blood + " / " + m_TargetBlood;
             m_CurTime += Time.deltaTime;
             mCountProgress.fillAmount = m_CurTime / mTargetTime;
         }
 
         private void CheckStateOver()
         {
-            if (mBlood < m_TargetBlood)
+            if (mCountProgress.fillAmount < 1)
+                return;
+            if (GameEntry.Utils.Blood < m_TargetBlood)
             {
                 //游戏失败
                 return;
             }
+
+            m_CurTime = 0;
             mCurGameState++;
             SetGameState();
         }
@@ -71,14 +76,14 @@ namespace GameMain
                 {
                     break;
                 }
-                mBlood += m_IncomePerSecond;
+                GameEntry.Utils.Blood += m_IncomePerSecond;
             }
         }
 
         private void SetGameState()
         {
             IDataTable<DRGameState> dtGameState = GameEntry.DataTable.GetDataTable<DRGameState>();
-            DRGameState drGameState = dtGameState.GetDataRow(mCurGameState);
+            DRGameState drGameState = dtGameState.GetDataRow(mCurGameState + 1);
             if (drGameState == null)
             {
                 Log.Warning("Can not load scene '{0}' from data table.", mCurGameState.ToString());
@@ -86,6 +91,7 @@ namespace GameMain
             }
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
+            mStateText.text = mCurGameState + "阶段";
         }
 
         private void AddCost(object sender,GameEventArgs e)

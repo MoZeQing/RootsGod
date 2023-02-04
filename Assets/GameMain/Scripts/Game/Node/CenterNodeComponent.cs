@@ -4,62 +4,86 @@ using System.Collections.Generic;
 using GameFramework.Event;
 using GameMain;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CenterNodeComponent : BaseNodeComponent
+namespace GameMain
 {
-    private int m_CostValue = 0;
-    private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-    public override List<BaseNodeComponent> ParentNodes
+    public class CenterNodeComponent : BaseNodeComponent, IPointerDownHandler
     {
-        get
+        [SerializeField] private int mCostValue = 0;
+        private NodeData m_NodeData = null;
+        private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
+        private int m_LineID = 0;
+        public override List<BaseNodeComponent> ParentNodes
         {
-            return m_ParentNodes;
+            get { return m_ParentNodes; }
         }
-    }
-    private List<BaseNodeComponent> m_ChildNodes = new List<BaseNodeComponent>();
 
-    public override List<BaseNodeComponent> ChildNodes
-    {
-        get
+        private List<BaseNodeComponent> m_ChildNodes = new List<BaseNodeComponent>();
+
+        public override List<BaseNodeComponent> ChildNodes
         {
-            return m_ChildNodes;
+            get { return m_ChildNodes; }
         }
-    }
 
-    private int m_AllOutput = 0;
-    
-    private void Start()
-    {
-        NodeType = NodeType.CenterNode;
-        NodeState = NodeState.Active;
-        m_CostValue = 0;
-        Select = false;
-        Cost = false;
-        Movable = false;
-        Connectable = true;
-    }
+        private void Start()
+        {
+            m_NodeData = transform.GetComponent<NodeData>();
+            m_NodeData.NodeType = NodeType.Level1Node;
+            m_NodeData.NodeState = NodeState.InActive;
+            m_NodeData.Select = false;
+            m_NodeData.Cost = false;
+            m_NodeData.Movable = false;
+            m_NodeData.Connectable = true;
+        }
 
-    private void OnEnable()
-    {
-        //GameEntry.Event.Subscribe(AddOutputEventArgs.EventId,AddOutput);
-        //GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-    }
+        private void OnEnable()
+        {
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+        }
 
-    private void OnDisable()
-    {
-        //GameEntry.Event.Unsubscribe(AddOutputEventArgs.EventId,AddOutput);
-        //GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-    }
+        private void OnDisable()
+        {
+            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+        }
 
-    private void AddOutput(object sender, GameEventArgs e)
-    {
-        AddIncomeEventArgs ne = (AddIncomeEventArgs)e;
-        m_AllOutput += ne.Income;
-    }
+        private void SetSelect(object sender, GameEventArgs e)
+        {
+            SetSelectEventArgs ne = (SetSelectEventArgs)e;
+            m_NodeData.Select = ne.Select;
+        }
 
-    private void SetSelect(object sender, GameEventArgs e)
-    {
-        SetSelectEventArgs ne = (SetSelectEventArgs)e;
-        Select = ne.Select;
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            switch (m_NodeData.NodeState)
+            {
+                case NodeState.Unknown:
+                    break;
+                case NodeState.InActive:
+                    break;
+                case NodeState.Active:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (!m_NodeData.Select)
+            {
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
+                    GameEntry.Event.FireNow(this,SetSelectEventArgs.Create(false));
+                    m_NodeData.Select = true;
+                }
+            }
+            else
+            {
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
+                    var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
+                    m_LineID = lineData.Id;
+                    GameEntry.Entity.ShowLine(lineData);
+                }
+            }
+        }
     }
 }
