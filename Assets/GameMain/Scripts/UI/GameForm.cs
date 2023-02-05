@@ -3,6 +3,7 @@ using System;
 using ET;
 using GameFramework.DataTable;
 using GameFramework.Event;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
@@ -89,6 +90,8 @@ namespace GameMain
                 Log.Warning("Can not load scene '{0}' from data table.", mCurGameState.ToString());
                 return;
             }
+
+            Instantiate(GameEntry.Utils.nodes[0], new Vector3(2, 0, 10.5f), quaternion.Euler(0, 0, 0));
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
             mStateText.text = mCurGameState + "阶段";

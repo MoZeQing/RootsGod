@@ -23,13 +23,13 @@ namespace GameMain
         CenterNode,
         Level1Node,
         Level2Node,
-        Level3Node,
         Level2To1Node,
-        Level3To2Node,
         EmptyNode,
         BlockingNode,
         ClearNode,
-        BoomNode,
+        //Level3To2Node,
+        //Level3Node,
+        //BoomNode,
     }
     public class NodeData : MonoBehaviour
     {

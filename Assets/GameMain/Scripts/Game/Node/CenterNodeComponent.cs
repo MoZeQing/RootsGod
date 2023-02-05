@@ -16,7 +16,7 @@ namespace GameMain
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
-            m_NodeData.NodeType = NodeType.Level1Node;
+            m_NodeData.NodeType = NodeType.CenterNode;
             m_NodeData.NodeState = NodeState.InActive;
             m_NodeData.Select = false;
             m_NodeData.Costable = false;

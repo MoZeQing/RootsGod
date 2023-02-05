@@ -18,7 +18,7 @@ namespace GameMain
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
-            m_NodeData.NodeType = NodeType.ClearNode;
+            m_NodeData.NodeType = NodeType.EmptyNode;
             m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
             mFrame.SetActive(m_NodeData.Select);

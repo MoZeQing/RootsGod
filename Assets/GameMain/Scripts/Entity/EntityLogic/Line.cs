@@ -2,6 +2,7 @@
 using GameFramework.Event;
 using UnityEngine;
 using UnityGameFramework.Runtime;
+using Random = UnityEngine.Random;
 
 namespace GameMain
 {
@@ -41,6 +42,8 @@ namespace GameMain
             m_PolygonCollider2D = transform.GetComponent<PolygonCollider2D>();
             mLineState = LineState.NotConnect;
             m_LineRenderer = transform.GetComponent<LineRenderer>();
+            var randomNum = Random.Range(0, 2);
+            m_LineRenderer.material = GameEntry.Utils.materials[randomNum];
             m_Material = m_LineRenderer.material;
             m_LineRenderer.SetPosition(0,m_Data.Self.position);
         }

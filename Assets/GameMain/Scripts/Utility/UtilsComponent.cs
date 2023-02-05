@@ -36,6 +36,7 @@ namespace GameMain
         public Dictionary<ConnectPair, bool> ConnectPairs = new Dictionary<ConnectPair, bool>();
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;
+        public GameObject[] nodes = null;
         public int Blood
         {
             get;
