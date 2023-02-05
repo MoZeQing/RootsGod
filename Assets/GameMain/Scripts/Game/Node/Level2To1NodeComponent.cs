@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class Level2To1NodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class Level2To1NodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
@@ -19,6 +19,9 @@ namespace GameMain
         private int m_PrePower = 0;
         private int m_ConnectLevel2Num = 0;
         private int m_PreConnect = 0;
+        
+        private bool m_Follow = false;
+        private Vector3 m_MousePositionInWorld = Vector3.zero;
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
@@ -58,6 +61,11 @@ namespace GameMain
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
+            
+            if (!m_Follow)
+                return;
+            GetMousePos(out m_MousePositionInWorld);
+            transform.position = m_MousePositionInWorld;
             // if (m_NodeData.NodeState != NodeState.Active)
             //     return;
             //
@@ -91,8 +99,8 @@ namespace GameMain
                     var power = m_curPower + m_ConnectLevel2Num * 2;
                     if (power > m_MaxPower)
                     {
-                        var usedPower = power % 2;
-                        m_NodeData.ParentNodes[i].Income -= usedPower;
+                        var usedIncome = (power - m_MaxPower) / 2;
+                        m_NodeData.ParentNodes[i].Income -= usedIncome;
                         m_curPower = m_MaxPower;
                     }
                     else
@@ -100,9 +108,10 @@ namespace GameMain
                         m_curPower = power;
                         m_NodeData.ParentNodes[i].Income = 0;
                     }
+                    
                     Debug.Log(m_curPower);
-                    Debug.Log(m_curPower * 2 - m_PrePower * 2);
-                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower * 2 - m_PrePower * 2));
+                    //Debug.Log(m_curPower * 2 - m_PrePower * 2);
+                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower));
                     m_PrePower = m_curPower;
                 }
             }
@@ -126,8 +135,8 @@ namespace GameMain
                     var power = m_curPower + m_ConnectLevel2Num * 2;
                     if (power > m_MaxPower)
                     {
-                        var usedPower = power % 2;
-                        m_NodeData.ChildNodes[i].Income -= usedPower;
+                        var usedIncome = (power - m_MaxPower) / 2;
+                        m_NodeData.ChildNodes[i].Income -= usedIncome;
                         m_curPower = m_MaxPower;
                     }
                     else
@@ -173,14 +182,40 @@ namespace GameMain
             }
             else
             {
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
+                    if (!m_Follow)
+                    {
+                        m_Follow = true;
+                    }
+                }
                 if (!GameEntry.Utils.LinePairs.ContainsKey(transform))
                     return;
+                m_Follow = false;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                if (m_Follow)
+                {
+                    m_Follow = false;
+                }
+            }
+        }
+        
+        private void GetMousePos(out Vector3 mousePositionInWorld)
+        {
+            var m_MousePositionOnScreen = Input.mousePosition;
+            m_MousePositionOnScreen.z = 10;
+            mousePositionInWorld = Camera.main.ScreenToWorldPoint(m_MousePositionOnScreen);
         }
     }
 }

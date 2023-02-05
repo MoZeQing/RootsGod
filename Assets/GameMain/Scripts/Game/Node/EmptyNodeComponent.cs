@@ -7,14 +7,14 @@ using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class ClearNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
+    public class EmptyNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private bool m_Follow = false;
         private Vector3 m_MousePositionInWorld = Vector3.zero;
+        private bool m_Follow = false;
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
@@ -80,6 +80,7 @@ namespace GameMain
             }
             else
             {
+                
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     if (!m_Follow)
