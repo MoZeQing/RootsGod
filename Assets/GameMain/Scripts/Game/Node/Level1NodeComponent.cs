@@ -14,6 +14,7 @@ namespace GameMain
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
+        private bool m_IsFire = false;
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
@@ -58,9 +59,13 @@ namespace GameMain
                 GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
                 m_IsAdd = true;
             }
-            if (m_NodeData.Total - m_NodeData.Income < m_NodeData.Income)
+            if (m_NodeData.Total < m_NodeData.Income)
             {
-                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+                if (!m_IsFire)
+                {
+                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+                    m_IsFire = true;
+                }
                 return;
             }
             m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
