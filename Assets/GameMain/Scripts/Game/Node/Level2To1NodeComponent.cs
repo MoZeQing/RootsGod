@@ -111,7 +111,7 @@ namespace GameMain
                     
                     Debug.Log(m_curPower);
                     //Debug.Log(m_curPower * 2 - m_PrePower * 2);
-                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower));
+                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower * 2));
                     m_PrePower = m_curPower;
                 }
             }
@@ -194,6 +194,7 @@ namespace GameMain
                 m_Follow = false;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
+                    GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }

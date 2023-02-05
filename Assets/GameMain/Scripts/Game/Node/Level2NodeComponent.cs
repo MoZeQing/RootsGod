@@ -13,6 +13,7 @@ namespace GameMain
         [SerializeField] private int mIncome = 0;
         [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
+        [SerializeField] private GameObject mProgress = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
@@ -57,11 +58,12 @@ namespace GameMain
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
-
+            
             if (m_NodeData.Income < 2)
             {
                 m_NodeData.Total -= (2 - m_NodeData.Income) * Time.deltaTime;
             }
+            mProgress.transform.SetLocalScaleX(1-(1 - m_NodeData.Total / mTotal));
             // if (m_NodeData.NodeState != NodeState.Active)
             //     return;
             //
@@ -126,6 +128,7 @@ namespace GameMain
                     return;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
+                    GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }

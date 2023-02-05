@@ -23,11 +23,18 @@ namespace GameMain
             {
                GameEntry.Event.FireNow(this, SetSelectEventArgs.Create(false));
             }
+            else
+            {
+               GameEntry.Sound.PlaySound(10003);
+            }
+
+            GameEntry.Sound.PlaySound(10007);
          }
 
          if (Input.GetMouseButtonDown(1))
          {
             GameEntry.Event.FireNow(this,HideLineEventArgs.Create());
+            GameEntry.Sound.PlaySound(10012);
          }
       }
 

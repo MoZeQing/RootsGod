@@ -17,6 +17,7 @@ namespace GameMain
         [SerializeField] private int mTargetTime = 30;
         [SerializeField] private Text mBloodText = null;
         [SerializeField] private Text mStateText = null;
+        [SerializeField] private Text mTargetBloodText = null;
         [SerializeField] private Image mCountProgress = null;
 
         private float m_CurTime = 0;
@@ -28,7 +29,7 @@ namespace GameMain
             GameEntry.Event.Subscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Subscribe(AddIncomeEventArgs.EventId,AddIncome);
             mCurGameState = 0;
-            mStateText.text = mCurGameState + "阶段";
+            mStateText.text = mCurGameState.ToString("00");
             SetGameState();
             UpdateTask().Coroutine();
         }
@@ -48,7 +49,7 @@ namespace GameMain
 
         private void UpdateUI()
         {
-            mBloodText.text = GameEntry.Utils.Blood + " / " + m_TargetBlood;
+            mBloodText.text = GameEntry.Utils.Blood.ToString();
             m_CurTime += Time.deltaTime;
             mCountProgress.fillAmount = m_CurTime / mTargetTime;
         }
@@ -77,6 +78,8 @@ namespace GameMain
                 {
                     break;
                 }
+
+                GameEntry.Sound.PlaySound(10011);
                 GameEntry.Utils.Blood += m_IncomePerSecond;
             }
         }
@@ -91,10 +94,12 @@ namespace GameMain
                 return;
             }
 
+            GameEntry.Sound.PlaySound(10018);
             Instantiate(GameEntry.Utils.nodes[0], new Vector3(2, 0, 10.5f), quaternion.Euler(0, 0, 0));
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
-            mStateText.text = mCurGameState + "阶段";
+            mTargetBloodText.text = m_TargetBlood.ToString();
+            mStateText.text = mCurGameState.ToString("00");
         }
 
         private void AddCost(object sender,GameEventArgs e)

@@ -1,18 +1,18 @@
 ﻿
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityGameFramework.Runtime;
 
 namespace GameMain
 {
     public class MenuForm : UGuiForm
     {
-        [SerializeField]
-        private GameObject m_QuitButton = null;
-
         private ProcedureMenu m_ProcedureMenu = null;
-
+        [SerializeField] private PlayableDirector m_Director = null;
+        private bool m_IsOver = false;
         public void OnStartButtonClick()
         {
+            GameEntry.Sound.PlaySound(10014);
             m_ProcedureMenu.StartGame();
         }
         
@@ -35,8 +35,7 @@ namespace GameMain
                 Log.Warning("ProcedureMenu is invalid when open MenuForm.");
                 return;
             }
-
-            m_QuitButton.SetActive(Application.platform != RuntimePlatform.IPhonePlayer);
+            m_IsOver = false;
         }
 
 #if UNITY_2017_3_OR_NEWER
@@ -46,8 +45,21 @@ namespace GameMain
 #endif
         {
             m_ProcedureMenu = null;
-
             base.OnClose(isShutdown, userData);
+        }
+
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+            if (m_IsOver)
+            {
+                m_Director.gameObject.SetActive(false);
+                return;
+            }
+            if (m_Director.time >= m_Director.duration - 0.1f)
+            {
+                m_IsOver = true;
+            }
         }
     }
 }

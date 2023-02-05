@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ET;
+using GameFramework.DataTable;
 using GameFramework.Event;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
@@ -26,6 +29,25 @@ namespace GameMain
             GameEntry.Event.Subscribe(ChangeProcedureStateEventArgs.EventId,ChangeState);
             m_State = State.Game;
             GameEntry.UI.OpenUIForm(UIFormId.GameForm);
+            string[] loadedSceneAssetNames = GameEntry.Scene.GetLoadedSceneAssetNames();
+            for (int i = 0; i < loadedSceneAssetNames.Length; i++)
+            {
+                GameEntry.Scene.UnloadScene(loadedSceneAssetNames[i]);
+            }
+            
+            // 还原游戏速度
+            GameEntry.Base.ResetNormalGameSpeed();
+            IDataTable<DRScene> dtScene = GameEntry.DataTable.GetDataTable<DRScene>();
+            DRScene drScene = dtScene.GetDataRow(2);
+            if (drScene == null)
+            {
+                Log.Warning("Can not load scene '{0}' from data table.", 2.ToString());
+                return;
+            }
+            Debug.Log("Start Load Scene");
+            GameEntry.Scene.LoadScene(AssetUtility.GetSceneAsset(drScene.AssetName), Constant.AssetPriority.SceneAsset, this);
+            BgmTask().Coroutine();
+            GameEntry.Sound.PlaySound(10017);
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
@@ -57,6 +79,25 @@ namespace GameMain
         {
             ChangeProcedureStateEventArgs ne = (ChangeProcedureStateEventArgs)e;
             m_State = ne.State;
+        }
+
+        private async ETTask BgmTask()
+        {
+            while (true)
+            {
+                if (GameEntry.Procedure.CurrentProcedure.ToString() != UCS.ProcedureMain)
+                    return;
+                GameEntry.Sound.PlayMusic(1);
+                await GameEntry.Timer.WaitSeconds(111);
+                if (GameEntry.Procedure.CurrentProcedure.ToString() != UCS.ProcedureMain)
+                    return;
+                GameEntry.Sound.PlayMusic(2);
+                await GameEntry.Timer.WaitSeconds(70);
+                if (GameEntry.Procedure.CurrentProcedure.ToString() != UCS.ProcedureMain)
+                    return;
+                GameEntry.Sound.PlayMusic(3);
+                await GameEntry.Timer.WaitSeconds(74);
+            }
         }
     }
 }

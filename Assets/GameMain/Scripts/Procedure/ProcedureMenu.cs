@@ -27,7 +27,8 @@ namespace GameMain
             base.OnEnter(procedureOwner);
 
             GameEntry.Event.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);
-
+            GameEntry.Sound.PlayMusic(0);
+            GameEntry.Sound.SetVolume("Music",1.0f);
             m_StartGame = false;
             GameEntry.UI.OpenUIForm(UIFormId.MenuForm, this);
         }

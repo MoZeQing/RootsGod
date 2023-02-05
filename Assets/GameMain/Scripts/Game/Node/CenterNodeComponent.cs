@@ -66,6 +66,7 @@ namespace GameMain
             {
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
+                    GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }

@@ -116,6 +116,12 @@ namespace GameMain
                             hitNodeData.ParentNodes.Add(selfNodeData);
                             GameEntry.Event.FireNow(this,AddParentNodeEventArgs.Create(hitNodeData));
                         }
+
+                        if (hit.transform.childCount >= 2)
+                        {
+                            hit.transform.GetChild(1).gameObject.SetActive(true);
+                            GameEntry.Sound.PlaySound(10009);
+                        }
                         GameEntry.Utils.Blood -= (int)cost;
                     }
                     else
