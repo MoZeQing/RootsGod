@@ -7,27 +7,25 @@ using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class Level1NodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class ClearNodeComponent : BaseNodeComponent, IPointerDownHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private bool m_IsAdd = false;
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
-            m_NodeData.NodeType = NodeType.Level1Node;
-            m_NodeData.NodeState = NodeState.InActive;
+            m_NodeData.NodeType = NodeType.ClearNode;
+            m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
             mFrame.SetActive(m_NodeData.Select);
             m_NodeData.Costable = false;
             m_NodeData.Movable = false;
-            m_NodeData.Connectable = true;
-            m_NodeData.Total = 100;
-            m_NodeData.Income = 2;
+            m_NodeData.Connectable = false;
+            m_NodeData.Total = 0;
+            m_NodeData.Income = 0;
             m_NodeData.CostPersecond = 1;
-            m_IsAdd = false;
         }
         
         private void OnEnable()
@@ -42,28 +40,7 @@ namespace GameMain
 
         private void Update()
         {
-            if (m_NodeData.Total <= 0)
-            {
-                m_NodeData.Total = 0;
-                m_NodeData.NodeState = NodeState.InActive;
-                return;
-            }
-            m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
-            //Debug.Log(m_NodeData.Total);
-            if (m_NodeData.NodeState != NodeState.Active)
-                return;
-
-            if (!m_IsAdd)
-            {
-                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
-                m_IsAdd = true;
-            }
-            if (m_NodeData.Total - m_NodeData.Income < m_NodeData.Income)
-            {
-                GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
-                return;
-            }
-            m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
+            
         }
         
         private void SetSelect(object sender, GameEventArgs e)

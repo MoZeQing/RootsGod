@@ -15,9 +15,12 @@ namespace GameMain
     {
         [Header("Line")]
         [SerializeField] private LineState mLineState = LineState.Undefined;
+        [SerializeField] private float mWidth = 1;
         private LineData m_Data = null;
         private LineRenderer m_LineRenderer = null;
         private Material m_Material = null;
+        private bool m_LineValid = true;
+        private PolygonCollider2D m_PolygonCollider2D = null;
 
         [Header("Mouse")]
         private float m_DepthZ = 10;
@@ -27,12 +30,15 @@ namespace GameMain
         {
             base.OnShow(userData);
             GameEntry.Event.Subscribe(HideLineEventArgs.EventId,HideLine);
+            GameEntry.Event.Subscribe(LineVaildEventArgs.EventId,LineValid);
             m_Data = userData as LineData;
             if (m_Data == null)
             {
                 Log.Error("LineData object data is invalid.");
                 return;
             }
+            m_LineValid = true;
+            m_PolygonCollider2D = transform.GetComponent<PolygonCollider2D>();
             mLineState = LineState.NotConnect;
             m_LineRenderer = transform.GetComponent<LineRenderer>();
             m_Material = m_LineRenderer.material;
@@ -43,6 +49,7 @@ namespace GameMain
         {
             base.OnHide(isShutdown, userData);
             GameEntry.Event.Unsubscribe(HideLineEventArgs.EventId,HideLine);
+            GameEntry.Event.Unsubscribe(LineVaildEventArgs.EventId,LineValid);
         }
 
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
@@ -55,11 +62,19 @@ namespace GameMain
                 case LineState.NotConnect:
                     GetMousePos(out m_MousePositionInWorld);
                     m_LineRenderer.SetPosition(1,m_MousePositionInWorld);
+                    var transform1 = m_Data.Self.transform;
+                    var self1Vector2 = new Vector2(transform1.position.x + mWidth, transform1.position.y);
+                    var self2Vector2 = new Vector2(transform1.position.x - mWidth, transform1.position.y);
+                    var target1Vector2 = new Vector2(m_MousePositionInWorld.x + mWidth, m_MousePositionInWorld.y);
+                    var target2Vector2 = new Vector2(m_MousePositionInWorld.x - mWidth, m_MousePositionInWorld.y);
+                    m_PolygonCollider2D.points =
+                        new Vector2[] { self1Vector2, self2Vector2, target2Vector2, target1Vector2 };
+                    
                     var distance = Vector3.Distance(m_LineRenderer.GetPosition(0),
                         m_LineRenderer.GetPosition(1));
                     //Debug.Log(distance);
                     var cost = (Math.Round(distance,1)) * UCS.BloodPerUnit;
-                    if (GameEntry.Utils.Blood >= cost)
+                    if (m_LineValid && GameEntry.Utils.Blood >= cost)
                     {
                         m_Material.color = Color.white;
                         if (!Input.GetMouseButtonDown(0))
@@ -134,6 +149,17 @@ namespace GameMain
             if (mLineState == LineState.Connect)
                 return;
             GameEntry.Entity.HideEntity(Entity.Id);
+        }
+
+        private void LineValid(object sender, GameEventArgs e)
+        {
+            LineVaildEventArgs ne = (LineVaildEventArgs)e;
+            if (mLineState == LineState.Connect)
+                return;
+            ClearNodeComponent clear = null;
+            if (m_Data.Self.TryGetComponent(out clear))
+                return;
+            m_LineValid = ne.Valid;
         }
     }
 }

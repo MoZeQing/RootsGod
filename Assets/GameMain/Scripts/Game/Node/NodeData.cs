@@ -27,7 +27,7 @@ namespace GameMain
         Level2To1Node,
         Level3To2Node,
         EmptyNode,
-        ObstacleNode,
+        BlockingNode,
         ClearNode,
         BoomNode,
     }
