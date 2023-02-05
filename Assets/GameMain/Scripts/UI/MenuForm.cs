@@ -9,6 +9,8 @@ namespace GameMain
     {
         private ProcedureMenu m_ProcedureMenu = null;
         [SerializeField] private PlayableDirector m_Director = null;
+        [SerializeField] private GameObject m_Director2 = null;
+        [SerializeField] private GameObject mDeveloper = null;
         private bool m_IsOver = false;
         public void OnStartButtonClick()
         {
@@ -19,6 +21,19 @@ namespace GameMain
         public void OnQuitButtonClick()
         {
             UnityGameFramework.Runtime.GameEntry.Shutdown(ShutdownType.Quit);
+        }
+
+        public void OnDeveloperButtonClick()
+        {
+            GameEntry.Sound.PlaySound(10014);
+            if (mDeveloper.activeSelf)
+            {
+                mDeveloper.SetActive(false);
+            }
+            else
+            {
+                mDeveloper.SetActive(true);
+            }
         }
 
 #if UNITY_2017_3_OR_NEWER
@@ -59,6 +74,8 @@ namespace GameMain
             if (m_Director.time >= m_Director.duration - 0.1f)
             {
                 m_IsOver = true;
+                GameEntry.Utils.first = false;
+                m_Director2.SetActive(true);
             }
         }
     }

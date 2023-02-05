@@ -26,6 +26,11 @@ namespace GameMain
         {
             base.OnEnter(procedureOwner);
 
+            string[] loadedSceneAssetNames = GameEntry.Scene.GetLoadedSceneAssetNames();
+            for (int i = 0; i < loadedSceneAssetNames.Length; i++)
+            {
+                GameEntry.Scene.UnloadScene(loadedSceneAssetNames[i]);
+            }
             GameEntry.Event.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);
             GameEntry.Sound.PlayMusic(0);
             GameEntry.Sound.SetVolume("Music",1.0f);

@@ -16,10 +16,7 @@ namespace GameMain
         private bool m_IsAdd = false;
         private int m_curPower = 0;
         //private int m_MaxPower = 3;
-        private int m_PrePower = 0;
-        private int m_ConnectLevel2Num = 0;
-        private int m_PreConnect = 0;
-        
+
         private bool m_Follow = false;
         private Vector3 m_MousePositionInWorld = Vector3.zero;
         private void Start()
@@ -87,6 +84,11 @@ namespace GameMain
             AddParentNodeEventArgs ne = (AddParentNodeEventArgs)e;
             if (ne.NodeData != m_NodeData)
                 return;
+            Debug.Log(m_curPower);
+            if (m_curPower >= 3)
+            {
+                return;
+            }
             for (int i = 0; i < m_NodeData.ParentNodes.Count; i++)
             {
                 if (m_NodeData.ChildNodes.Contains(m_NodeData.ParentNodes[i]))
@@ -95,8 +97,8 @@ namespace GameMain
                 {
                     if (m_NodeData.ParentNodes[i].Income == 0)
                         continue;
-                    m_ConnectLevel2Num++;
-                    var power = m_curPower + m_ConnectLevel2Num * 2;
+                    var prePower = m_curPower;
+                    var power = m_curPower + m_NodeData.ParentNodes[i].Income;
                     if (power > mMaxPower)
                     {
                         var usedIncome = (power - mMaxPower) / 2;
@@ -108,11 +110,9 @@ namespace GameMain
                         m_curPower = power;
                         m_NodeData.ParentNodes[i].Income = 0;
                     }
-                    
                     Debug.Log(m_curPower);
                     //Debug.Log(m_curPower * 2 - m_PrePower * 2);
-                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower * 2));
-                    m_PrePower = m_curPower;
+                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create((m_curPower - prePower) * 2));
                 }
             }
             
@@ -123,6 +123,11 @@ namespace GameMain
             AddChildNodeEventArgs ne = (AddChildNodeEventArgs)e;
             if (ne.NodeData != m_NodeData)
                 return;
+            Debug.Log(m_curPower);
+            if (m_curPower >= 3)
+            {
+                return;
+            }
             for (int i = 0; i < m_NodeData.ChildNodes.Count; i++)
             {
                 if (m_NodeData.ParentNodes.Contains(m_NodeData.ChildNodes[i]))
@@ -131,8 +136,8 @@ namespace GameMain
                 {
                     if (m_NodeData.ChildNodes[i].Income == 0)
                         continue;
-                    m_ConnectLevel2Num++;
-                    var power = m_curPower + m_ConnectLevel2Num * 2;
+                    var prePower = m_curPower;
+                    var power = m_curPower + m_NodeData.ChildNodes[i].Income;
                     if (power > mMaxPower)
                     {
                         var usedIncome = (power - mMaxPower) / 2;
@@ -144,8 +149,9 @@ namespace GameMain
                         m_curPower = power;
                         m_NodeData.ChildNodes[i].Income = 0;
                     }
-                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_curPower * 2 - m_PrePower * 2));
-                    m_PrePower = m_curPower;
+                    Debug.Log(m_curPower);
+                    //Debug.Log(m_curPower * 2 - m_PrePower * 2);
+                    GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create((m_curPower - prePower) * 2));
                 }
             }
         }

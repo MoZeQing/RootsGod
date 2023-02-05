@@ -29,11 +29,6 @@ namespace GameMain
             GameEntry.Event.Subscribe(ChangeProcedureStateEventArgs.EventId,ChangeState);
             m_State = State.Game;
             GameEntry.UI.OpenUIForm(UIFormId.GameForm);
-            string[] loadedSceneAssetNames = GameEntry.Scene.GetLoadedSceneAssetNames();
-            for (int i = 0; i < loadedSceneAssetNames.Length; i++)
-            {
-                GameEntry.Scene.UnloadScene(loadedSceneAssetNames[i]);
-            }
             
             // 还原游戏速度
             GameEntry.Base.ResetNormalGameSpeed();
@@ -54,6 +49,12 @@ namespace GameMain
         {
             base.OnLeave(procedureOwner, isShutdown);
             GameEntry.Event.Unsubscribe(ChangeProcedureStateEventArgs.EventId,ChangeState);
+            GameEntry.Sound.StopAllLoadedSounds();
+            GameEntry.Sound.StopAllLoadingSounds();
+            GameEntry.UI.CloseAllLoadedUIForms();
+            GameEntry.UI.CloseAllLoadingUIForms();
+            GameEntry.Entity.HideAllLoadedEntities();
+            GameEntry.Entity.HideAllLoadingEntities();
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)

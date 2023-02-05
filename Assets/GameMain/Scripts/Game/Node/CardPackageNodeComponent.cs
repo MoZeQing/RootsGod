@@ -95,6 +95,7 @@ namespace GameMain
 
                 if (eventData.button == PointerEventData.InputButton.Right)
                 {
+                    transform.parent.GetChild(1).gameObject.SetActive(true);
                     ShowNode();
                 }
             }
@@ -104,7 +105,7 @@ namespace GameMain
         {
             for (int i = 0; i < mDrawNum; i++)
             {
-                var randomNum = Random.Range(1, mDepth);
+                var randomNum = Random.Range(1, GameEntry.Utils.depth + 1);
                 var entity = Instantiate(GameEntry.Utils.nodes[randomNum], transform.position,
                     Quaternion.Euler(0, 0, 0));
                 entity.transform.DOMoveX(mPos[i].transform.position.x,mCardMoveTime);

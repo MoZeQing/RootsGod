@@ -37,6 +37,8 @@ namespace GameMain
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;
         public GameObject[] nodes = null;
+        public int depth = 0;
+        public bool first = true;
         public int Blood
         {
             get;
