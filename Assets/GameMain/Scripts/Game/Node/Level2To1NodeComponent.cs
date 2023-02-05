@@ -9,13 +9,13 @@ namespace GameMain
 {
     public class Level2To1NodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
-        [SerializeField] private int mCostValue = 0;
+        [SerializeField] private int mMaxPower = 3;
         [SerializeField] private GameObject mFrame = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
         private int m_curPower = 0;
-        private int m_MaxPower = 3;
+        //private int m_MaxPower = 3;
         private int m_PrePower = 0;
         private int m_ConnectLevel2Num = 0;
         private int m_PreConnect = 0;
@@ -97,11 +97,11 @@ namespace GameMain
                         continue;
                     m_ConnectLevel2Num++;
                     var power = m_curPower + m_ConnectLevel2Num * 2;
-                    if (power > m_MaxPower)
+                    if (power > mMaxPower)
                     {
-                        var usedIncome = (power - m_MaxPower) / 2;
+                        var usedIncome = (power - mMaxPower) / 2;
                         m_NodeData.ParentNodes[i].Income -= usedIncome;
-                        m_curPower = m_MaxPower;
+                        m_curPower = mMaxPower;
                     }
                     else
                     {
@@ -133,11 +133,11 @@ namespace GameMain
                         continue;
                     m_ConnectLevel2Num++;
                     var power = m_curPower + m_ConnectLevel2Num * 2;
-                    if (power > m_MaxPower)
+                    if (power > mMaxPower)
                     {
-                        var usedIncome = (power - m_MaxPower) / 2;
+                        var usedIncome = (power - mMaxPower) / 2;
                         m_NodeData.ChildNodes[i].Income -= usedIncome;
-                        m_curPower = m_MaxPower;
+                        m_curPower = mMaxPower;
                     }
                     else
                     {

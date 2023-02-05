@@ -9,7 +9,9 @@ namespace GameMain
 {
     public class Level2NodeComponent : BaseNodeComponent, IPointerDownHandler
     {
-        [SerializeField] private int mCostValue = 0;
+        [SerializeField] private int mTotal = 0;
+        [SerializeField] private int mIncome = 0;
+        [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
@@ -24,9 +26,9 @@ namespace GameMain
             m_NodeData.Costable = false;
             m_NodeData.Movable = false;
             m_NodeData.Connectable = true;
-            m_NodeData.Total = 100;
-            m_NodeData.Income = 2;
-            m_NodeData.CostPersecond = 1;
+            m_NodeData.Total = mTotal;
+            m_NodeData.Income = mIncome;
+            m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
         }
         
