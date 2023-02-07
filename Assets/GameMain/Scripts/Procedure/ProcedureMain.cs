@@ -55,6 +55,11 @@ namespace GameMain
             GameEntry.UI.CloseAllLoadingUIForms();
             GameEntry.Entity.HideAllLoadedEntities();
             GameEntry.Entity.HideAllLoadingEntities();
+
+            for (int i = 0; i < GameEntry.Utils.entityNode.Count; i++)
+            {
+                GameObject.Destroy(GameEntry.Utils.entityNode[i]);
+            }
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)

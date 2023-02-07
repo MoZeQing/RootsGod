@@ -16,10 +16,12 @@ namespace GameMain
         [SerializeField] private GameObject mProgress = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
+        private Rigidbody2D m_Rigidbody2D = null;
         private bool m_IsAdd = false;
         private bool m_IsFire = false;
         private void Start()
         {
+            m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
             m_NodeData = transform.GetComponent<NodeData>();
             m_NodeData.NodeType = NodeType.Level1Node;
             m_NodeData.NodeState = NodeState.InActive;
@@ -46,6 +48,16 @@ namespace GameMain
 
         private void Update()
         {
+            // if (m_NodeData.IsPhysic)
+            // {
+            //     m_NodeData.Connectable = false;
+            //     if (m_Rigidbody2D.velocity.magnitude <= 0.2f)
+            //     {
+            //         Invoke(nameof(SetRigid),0.5f);
+            //         m_NodeData.IsPhysic = false;
+            //     }
+            // }
+            
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
@@ -82,6 +94,12 @@ namespace GameMain
             mFrame.SetActive(m_NodeData.Select);
         }
 
+        private void SetRigid()
+        {
+            m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
+            m_NodeData.Connectable = true;
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             switch (m_NodeData.NodeState)
@@ -109,8 +127,12 @@ namespace GameMain
             {
                 if (!GameEntry.Utils.LinePairs.ContainsKey(transform))
                     return;
+                if (!m_NodeData.Connectable)
+                    return;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
+                    if (GameEntry.Utils.dragLine)
+                        return;
                     GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);

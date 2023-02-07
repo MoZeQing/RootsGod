@@ -27,6 +27,7 @@ namespace GameMain
         EmptyNode,
         BlockingNode,
         ClearNode,
+        CardPackage,
         //Level3To2Node,
         //Level3Node,
         //BoomNode,
@@ -77,6 +78,12 @@ namespace GameMain
         }
 
         public int CostPersecond
+        {
+            get;
+            set;
+        }
+        
+        public bool IsPhysic
         {
             get;
             set;

@@ -16,7 +16,7 @@ namespace GameMain
     {
         [Header("Line")]
         [SerializeField] private LineState mLineState = LineState.Undefined;
-        [SerializeField] private float mWidth = 1;
+        [SerializeField] private float mWidth = 0.25f;
         private LineData m_Data = null;
         private LineRenderer m_LineRenderer = null;
         private Material m_Material = null;
@@ -38,6 +38,8 @@ namespace GameMain
                 Log.Error("LineData object data is invalid.");
                 return;
             }
+
+            GameEntry.Utils.dragLine = true;
             m_LineValid = true;
             m_PolygonCollider2D = transform.GetComponent<PolygonCollider2D>();
             mLineState = LineState.NotConnect;
@@ -65,13 +67,17 @@ namespace GameMain
                 case LineState.NotConnect:
                     GetMousePos(out m_MousePositionInWorld);
                     m_LineRenderer.SetPosition(1,m_MousePositionInWorld);
-                    var transform1 = m_Data.Self.transform;
-                    var self1Vector2 = new Vector2(transform1.position.x + mWidth, transform1.position.y);
-                    var self2Vector2 = new Vector2(transform1.position.x - mWidth, transform1.position.y);
-                    var target1Vector2 = new Vector2(m_MousePositionInWorld.x + mWidth, m_MousePositionInWorld.y);
-                    var target2Vector2 = new Vector2(m_MousePositionInWorld.x - mWidth, m_MousePositionInWorld.y);
-                    m_PolygonCollider2D.points =
-                        new Vector2[] { self1Vector2, self2Vector2, target2Vector2, target1Vector2 };
+                    Vector2 startPos = m_Data.Self.transform.position;
+                    Vector2 endPos = m_MousePositionInWorld;
+                    Vector2 seVec = startPos - endPos;
+                    Vector2 rotateVec = new Vector2(-seVec.y, seVec.x).normalized;
+                    m_PolygonCollider2D.points = new Vector2[]
+                    {
+                        startPos + rotateVec * mWidth,
+                        startPos - rotateVec * mWidth,
+                        endPos - rotateVec * mWidth,
+                        endPos + rotateVec * mWidth,
+                    };
                     
                     var distance = Vector3.Distance(m_LineRenderer.GetPosition(0),
                         m_LineRenderer.GetPosition(1));
@@ -94,8 +100,15 @@ namespace GameMain
                             if (GameEntry.Utils.ConnectPairs[connectPair])
                                 return;
                         }
+                        var selfNodeData = m_Data.Self.GetComponent<NodeData>();
+                        var hitNodeData = hit.transform.GetComponent<NodeData>();
+                        if (hitNodeData.NodeType == NodeType.CardPackage)
+                            return;
+
                         m_LineRenderer.SetPosition(1,hit.transform.position);
                         mLineState = LineState.Connect;
+                        
+                        GameEntry.Utils.dragLine = false;
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(m_Data.Self, hit.transform), true);
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(hit.transform, m_Data.Self), true);
                         if (!GameEntry.Utils.LinePairs.ContainsKey(hit.transform))
@@ -103,8 +116,17 @@ namespace GameMain
                             GameEntry.Utils.LinePairs.Add(hit.transform,true);
                         }
                         
-                        var selfNodeData = m_Data.Self.GetComponent<NodeData>();
-                        var hitNodeData = hit.transform.GetComponent<NodeData>();
+                        Vector2 endPos2 = hit.transform.gameObject.transform.position;
+                        Vector2 seVec2 = startPos - endPos2;
+                        Vector2 rotateVec2 = new Vector2(-seVec2.y, seVec2.x).normalized;
+                        m_PolygonCollider2D.points = new Vector2[]
+                        {
+                            startPos + rotateVec2 * mWidth,
+                            startPos - rotateVec2 * mWidth,
+                            endPos - rotateVec2 * mWidth,
+                            endPos + rotateVec2 * mWidth,
+                        };
+                        
                         hitNodeData.NodeState = NodeState.Active;
                         if (!selfNodeData.ChildNodes.Contains(hitNodeData))
                         {
@@ -157,6 +179,7 @@ namespace GameMain
             HideLineEventArgs ne = (HideLineEventArgs)e;
             if (mLineState == LineState.Connect)
                 return;
+            GameEntry.Utils.dragLine = true;
             GameEntry.Entity.HideEntity(Entity.Id);
         }
 

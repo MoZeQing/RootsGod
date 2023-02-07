@@ -23,7 +23,7 @@ namespace GameMain
         private void Start()
         {
             m_NodeData = transform.GetComponent<NodeData>();
-            m_NodeData.NodeType = NodeType.ClearNode;
+            m_NodeData.NodeType = NodeType.CardPackage;
             m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
             mFrame.SetActive(m_NodeData.Select);
@@ -105,14 +105,65 @@ namespace GameMain
         {
             for (int i = 0; i < mDrawNum; i++)
             {
-                var randomNum = Random.Range(1, GameEntry.Utils.depth + 1);
+                var randomNum = GetNode(GameEntry.Utils.depth1,GameEntry.Utils.depth2);
                 var entity = Instantiate(GameEntry.Utils.nodes[randomNum], transform.position,
                     Quaternion.Euler(0, 0, 0));
-                entity.transform.DOMoveX(mPos[i].transform.position.x,mCardMoveTime);
-                entity.transform.DOMoveY(mPos[i].transform.position.y,mCardMoveTime);
+                var rigid2D = entity.GetComponent<Rigidbody2D>();
+                var entityCollider = entity.GetComponent<BoxCollider2D>();
+                //collider.enabled = false;
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(entity.transform.DOMoveX(mPos[i].transform.position.x, mCardMoveTime));
+                sequence.Insert(0, entity.transform.DOMoveY(mPos[i].transform.position.y, mCardMoveTime));
+                // .OnComplete(() =>
+                // {
+                //     entityCollider.enabled = true;
+                //     entity.GetComponent<NodeData>().IsPhysic = true;
+                // });
+
             }
             transform.gameObject.SetActive(false);  
         }
+
+        private int GetNode(int depth1,int depth2)
+        {
+            int randomNum = 0;
+            if (depth1 == 0 && depth2 == 0)
+            {
+                Debug.LogError("Invalid Num");
+                return 0;
+            }
+            
+            if (depth1 == 0 && depth2 != 0)
+            {
+                randomNum = Random.Range(0, depth2);
+                return randomNum;
+            }
+            
+            if (depth1 != 0 && depth2 == 0)
+            {
+                randomNum = Random.Range(0, depth1);
+                return randomNum;
+            }
+            var depth = depth1 + depth2;
+            switch (depth2)
+            {
+                case 1:
+                    randomNum = Random.Range(0, depth);
+                    if (randomNum == depth - 1)
+                        randomNum = 0;
+                    return randomNum;
+                case 2:
+                    randomNum = Random.Range(0, depth);
+                    if (randomNum == depth - 1)
+                        randomNum = 3;
+                    if (randomNum == depth - 2)
+                        randomNum = 0;
+                    return randomNum;
+                default:
+                    return 0;
+            }
+        }
+        
 
         public void OnPointerUp(PointerEventData eventData)
         {

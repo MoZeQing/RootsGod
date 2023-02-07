@@ -93,6 +93,8 @@ namespace GameMain
                 m_Follow = false;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
+                    if (GameEntry.Utils.dragLine)
+                        return;
                     GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);

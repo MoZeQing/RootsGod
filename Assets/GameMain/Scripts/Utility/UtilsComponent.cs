@@ -36,9 +36,13 @@ namespace GameMain
         public Dictionary<ConnectPair, bool> ConnectPairs = new Dictionary<ConnectPair, bool>();
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;
+        public GameObject cardNode = null;
         public GameObject[] nodes = null;
-        public int depth = 0;
+        public List<GameObject> entityNode = null;
+        public int depth1 = 0;
+        public int depth2 = 0;
         public bool first = true;
+        public bool dragLine = false;
         public int Blood
         {
             get;
@@ -48,6 +52,7 @@ namespace GameMain
         private void Start()
         {
             Blood = 100;
+            entityNode = new List<GameObject>();
         }
     }
 }

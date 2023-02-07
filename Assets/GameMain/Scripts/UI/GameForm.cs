@@ -87,7 +87,7 @@ namespace GameMain
                 m_GameOver = true;
                 GameEntry.Sound.PlaySound(10019);
                 mDie.SetActive(true);
-                Invoke(nameof(OnQuitButtonClick),1.6f + 20f);
+                Invoke(nameof(OnQuitButtonClick),1.6f + 2f);
                 return;
             }
 
@@ -123,10 +123,13 @@ namespace GameMain
             }
 
             GameEntry.Sound.PlaySound(10018);
-            Instantiate(GameEntry.Utils.nodes[0], new Vector3(2, 0, 10.5f), quaternion.Euler(0, 0, 0));
+            var node = Instantiate(GameEntry.Utils.cardNode, new Vector3(2, 0, 10.5f), 
+                quaternion.Euler(0, 0, 0));
+            GameEntry.Utils.entityNode.Add(node);
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
-            GameEntry.Utils.depth = drGameState.PoolDepth;
+            GameEntry.Utils.depth1 = drGameState.PoolDepth1;
+            GameEntry.Utils.depth2 = drGameState.PoolDepth2;
             mTargetBloodText.text = m_TargetBlood.ToString();
             mStateText.text = mCurGameState.ToString("00");
         }

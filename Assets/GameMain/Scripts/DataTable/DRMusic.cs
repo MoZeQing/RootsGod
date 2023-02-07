@@ -5,7 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 // 此文件由工具自动生成，请勿直接修改。
-// 生成时间：2023-02-04 14:00:20.465
+// 生成时间：2023-02-07 22:19:30.318
 //------------------------------------------------------------
 
 using GameFramework;
@@ -26,7 +26,7 @@ namespace GameMain
         private int m_Id = 0;
 
         /// <summary>
-        /// 获取音乐编号。
+        /// 获取。
         /// </summary>
         public override int Id
         {
@@ -37,7 +37,7 @@ namespace GameMain
         }
 
         /// <summary>
-        /// 获取资源名称。
+        /// 获取。
         /// </summary>
         public string AssetName
         {
