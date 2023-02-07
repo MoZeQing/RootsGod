@@ -15,6 +15,7 @@ namespace GameMain
       // [SerializeField] private float mDown = 20;
       [SerializeField] private float mScrollSpeed = 6;
       [SerializeField] private float mScrollLerp = 0.5f;
+      [SerializeField] private Vector2 mScrollClamp = new Vector2(-10,10);
       [SerializeField] private float mMouseSpeed = 0.5f;
       [SerializeField] private Vector4 mCameraLimit = new Vector4(-5.5f,6.5f,-5f,3.4f);
 
@@ -90,6 +91,7 @@ namespace GameMain
       {
          m_Scroll += Input.GetAxis("Mouse ScrollWheel") * mScrollSpeed;
          //Debug.Log(m_Scroll);
+         m_Scroll = Mathf.Clamp(m_Scroll, mScrollClamp.x, mScrollClamp.y);
          Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 
             m_StartScroll - m_Scroll, mScrollLerp);
       }

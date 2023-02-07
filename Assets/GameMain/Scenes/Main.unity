@@ -264,6 +264,7 @@ MonoBehaviour:
   mDepthZ: 0
   mScrollSpeed: 6
   mScrollLerp: 0.5
+  mScrollClamp: {x: -10, y: 10}
   mMouseSpeed: 0.5
   mCameraLimit: {x: -5.5, y: 6.5, z: -5, w: 3.4}
 --- !u!4 &202422783
@@ -664,7 +665,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4891240240675801840, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_BodyType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6023485904917135973, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_RootOrder
@@ -725,7 +726,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4891240240675801840, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_BodyType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6023485904917135973, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_RootOrder
@@ -1338,7 +1339,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4891240240675801840, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_BodyType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6023485904917135973, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_RootOrder
@@ -1740,7 +1741,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4891240240675801840, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_BodyType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6023485904917135973, guid: 6d3cdd61d1e349a46800467f3bafd02c, type: 3}
       propertyPath: m_RootOrder

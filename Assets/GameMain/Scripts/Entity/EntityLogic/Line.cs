@@ -179,7 +179,7 @@ namespace GameMain
             HideLineEventArgs ne = (HideLineEventArgs)e;
             if (mLineState == LineState.Connect)
                 return;
-            GameEntry.Utils.dragLine = true;
+            GameEntry.Utils.dragLine = false;
             GameEntry.Entity.HideEntity(Entity.Id);
         }
 
