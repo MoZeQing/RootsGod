@@ -148,6 +148,7 @@ namespace GameMain
             GameEntry.Sound.PlaySound(10018);
             GameEntry.Utils.ShowCardPackage();
             m_BuyCount = 0;
+            mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
             GameEntry.Utils.depth1 = drGameState.PoolDepth1;

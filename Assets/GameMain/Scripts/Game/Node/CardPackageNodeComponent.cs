@@ -105,6 +105,7 @@ namespace GameMain
         {
             for (int i = 0; i < mDrawNum; i++)
             {
+                Debug.Log("第" + i +"抽");
                 var randomNum = GetNode(GameEntry.Utils.depth1,GameEntry.Utils.depth2);
                 var entity = Instantiate(GameEntry.Utils.nodes[randomNum], transform.position,
                     Quaternion.Euler(0, 0, 0));
@@ -127,6 +128,7 @@ namespace GameMain
         private int GetNode(int depth1,int depth2)
         {
             int randomNum = 0;
+            Debug.Log("卡池1深度:" + depth1 + "| 卡池2深度:" + depth2);
             if (depth1 == 0 && depth2 == 0)
             {
                 Debug.LogError("Invalid Num");
@@ -136,13 +138,16 @@ namespace GameMain
             if (depth1 == 0 && depth2 != 0)
             {
                 randomNum = Random.Range(0, depth2);
+                Debug.Log("随机范围:" + 0 + "-" + (depth2 - 1));
                 switch (randomNum)
                 {
                     case 0:
                         randomNum = 0;
+                        Debug.Log("随机数:" + randomNum);
                         return randomNum;
                     case 1:
                         randomNum = 3;
+                        Debug.Log("随机数:" + randomNum);
                         return randomNum;
                     default:
                         return 0;
@@ -153,15 +158,19 @@ namespace GameMain
             if (depth1 != 0 && depth2 == 0)
             {
                 randomNum = Random.Range(0, depth1);
+                Debug.Log("随机范围:" + 0 + "-" + (depth1 - 1));
+                Debug.Log("随机数:" + randomNum);
                 return randomNum;
             }
             var depth = depth1 + depth2;
+            Debug.Log("随机范围:" + 0 + "-" + (depth1 - 1));
             switch (depth2)
             {
                 case 1:
                     randomNum = Random.Range(0, depth);
                     if (randomNum == depth - 1)
                         randomNum = 0;
+                    Debug.Log("随机数:" + randomNum);
                     return randomNum;
                 case 2:
                     randomNum = Random.Range(0, depth);
@@ -169,6 +178,7 @@ namespace GameMain
                         randomNum = 3;
                     if (randomNum == depth - 2)
                         randomNum = 0;
+                    Debug.Log("随机数:" + randomNum);
                     return randomNum;
                 default:
                     return 0;
