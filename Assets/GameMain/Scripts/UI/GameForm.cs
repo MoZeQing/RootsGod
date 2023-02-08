@@ -86,11 +86,11 @@ namespace GameMain
             var cost = GameEntry.Utils.cardCost[m_BuyCount];
             if (GameEntry.Utils.Blood < cost)
                 return;
+            GameEntry.Utils.Blood -= GameEntry.Utils.cardCost[m_BuyCount];
             m_BuyCount++;
             if (m_BuyCount > GameEntry.Utils.cardCost.Length - 1)
                 m_BuyCount--;
             mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
-            GameEntry.Utils.Blood -= GameEntry.Utils.cardCost[m_BuyCount];
             GameEntry.Utils.ShowCardPackage();
         }
 

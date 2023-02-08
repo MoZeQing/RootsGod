@@ -136,6 +136,17 @@ namespace GameMain
             if (depth1 == 0 && depth2 != 0)
             {
                 randomNum = Random.Range(0, depth2);
+                switch (randomNum)
+                {
+                    case 0:
+                        randomNum = 0;
+                        return randomNum;
+                    case 1:
+                        randomNum = 3;
+                        return randomNum;
+                    default:
+                        return 0;
+                }
                 return randomNum;
             }
             
