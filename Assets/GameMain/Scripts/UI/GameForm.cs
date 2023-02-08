@@ -18,7 +18,9 @@ namespace GameMain
         [SerializeField] private Text mBloodText = null;
         [SerializeField] private Text mStateText = null;
         [SerializeField] private Text mTargetBloodText = null;
+        [SerializeField] private Text mCardCostBloodText = null;
         [SerializeField] private Image mCountProgress = null;
+        [SerializeField] private GameObject mGuideImage = null;
 
         [Header("GameOver")] 
         [SerializeField] private GameObject mDie = null;
@@ -26,12 +28,13 @@ namespace GameMain
         private int m_IncomePerSecond = 0;
         private int m_TargetBlood = 0;
         private bool m_GameOver = false;
+        private int m_BuyCount = 0;
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
             GameEntry.Event.Subscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Subscribe(AddIncomeEventArgs.EventId,AddIncome);
-            GameEntry.Utils.Blood = 100;
+            GameEntry.Utils.Blood = GameEntry.Utils.startBlood;
             mTargetGameState = 15;
             m_GameOver = false;
             mCurGameState = 0;
@@ -41,6 +44,8 @@ namespace GameMain
             mDie.SetActive(false);
             mStateText.text = mCurGameState.ToString("00");
             mCountProgress.fillAmount = 0;
+            m_BuyCount = 0;
+            mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
             SetGameState();
             UpdateTask().Coroutine();
         }
@@ -69,6 +74,24 @@ namespace GameMain
         public void OnPauseButtonClick()
         {
             GameEntry.Base.GameSpeed = GameEntry.Base.GameSpeed == 0 ? 1 : 0;
+        }
+        
+        public void OnGuideButtonClick()
+        {
+            mGuideImage.SetActive(!mGuideImage.activeSelf);
+        }
+
+        public void OnBuyButtonClick()
+        {
+            var cost = GameEntry.Utils.cardCost[m_BuyCount];
+            if (GameEntry.Utils.Blood < cost)
+                return;
+            m_BuyCount++;
+            if (m_BuyCount > GameEntry.Utils.cardCost.Length - 1)
+                m_BuyCount--;
+            mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
+            GameEntry.Utils.Blood -= GameEntry.Utils.cardCost[m_BuyCount];
+            GameEntry.Utils.ShowCardPackage();
         }
 
         private void UpdateUI()
@@ -123,9 +146,8 @@ namespace GameMain
             }
 
             GameEntry.Sound.PlaySound(10018);
-            var node = Instantiate(GameEntry.Utils.cardNode, new Vector3(2, 0, 10.5f), 
-                quaternion.Euler(0, 0, 0));
-            GameEntry.Utils.entityNode.Add(node);
+            GameEntry.Utils.ShowCardPackage();
+            m_BuyCount = 0;
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
             GameEntry.Utils.depth1 = drGameState.PoolDepth1;

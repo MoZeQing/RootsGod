@@ -24,10 +24,11 @@ namespace GameMain
       private Vector3 m_MousePositionOnScreen = Vector3.zero;
       private Vector3 m_MousePositionInWorld = Vector3.zero;
       private bool m_Move = false;
-      private Vector3 m_BasePos = Vector3.zero;
-      private Vector2 m_BaseMousePos = Vector2.zero;
+      private Camera m_Main = null;
+
       private void Start()
       {
+         m_Main = Camera.main;
          m_StartScroll = Camera.main.fieldOfView;
       }
 
@@ -37,7 +38,7 @@ namespace GameMain
          {
             Vector3 mousePos = Input.mousePosition;
             mousePos.z = 10;
-            m_MousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePos);
+            m_MousePositionInWorld = m_Main.ScreenToWorldPoint(mousePos);
             RaycastHit2D hit = Physics2D.Raycast(m_MousePositionInWorld, Vector2.zero);
             if (!hit)
             {
@@ -63,8 +64,6 @@ namespace GameMain
             GameEntry.Event.FireNow(this,HideLineEventArgs.Create());
             GameEntry.Sound.PlaySound(10012);
             m_MousePositionInWorld.z = 0;
-            m_BasePos = Camera.main.transform.position;
-            m_BaseMousePos = new Vector2(Input.GetAxisRaw("Mouse X"),Input.GetAxisRaw("Mouse Y"));
             m_Move = true;
          }
 
@@ -78,13 +77,13 @@ namespace GameMain
       {
          if (!m_Move)
             return;
-         var mouseDragX = Camera.main.transform.right * (Input.GetAxisRaw("Mouse X") - m_BaseMousePos.x) * mMouseSpeed;
-         var mouseDragY = Camera.main.transform.up * (Input.GetAxisRaw("Mouse Y") - m_BaseMousePos.y) * mMouseSpeed;
-         Camera.main.transform.position -= mouseDragX + mouseDragY;
+         var mouseDragX = m_Main.transform.right * Input.GetAxisRaw("Mouse X") * mMouseSpeed;
+         var mouseDragY = m_Main.transform.up * Input.GetAxisRaw("Mouse Y") * mMouseSpeed;
+         m_Main.transform.position -= mouseDragX + mouseDragY;
          
-         var posX = Mathf.Clamp(Camera.main.transform.position.x, mCameraLimit.x, mCameraLimit.y);
-         var posY = Mathf.Clamp(Camera.main.transform.position.y, mCameraLimit.z, mCameraLimit.w);
-         Camera.main.transform.position = new Vector3(posX, posY, Camera.main.transform.position.z);
+         var posX = Mathf.Clamp(m_Main.transform.position.x, mCameraLimit.x, mCameraLimit.y);
+         var posY = Mathf.Clamp(m_Main.transform.position.y, mCameraLimit.z, mCameraLimit.w);
+         m_Main.transform.position = new Vector3(posX, posY, m_Main.transform.position.z);
       }
 
       private void SetCameraView()
@@ -92,7 +91,7 @@ namespace GameMain
          m_Scroll += Input.GetAxis("Mouse ScrollWheel") * mScrollSpeed;
          //Debug.Log(m_Scroll);
          m_Scroll = Mathf.Clamp(m_Scroll, mScrollClamp.x, mScrollClamp.y);
-         Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 
+         m_Main.fieldOfView = Mathf.Lerp(m_Main.fieldOfView, 
             m_StartScroll - m_Scroll, mScrollLerp);
       }
 
@@ -100,7 +99,7 @@ namespace GameMain
       {
          m_MousePositionOnScreen = Input.mousePosition;
          m_MousePositionOnScreen.z = mDepthZ;
-         mousePositionInWorld = Camera.main.ScreenToWorldPoint(m_MousePositionOnScreen);
+         mousePositionInWorld = m_Main.ScreenToWorldPoint(m_MousePositionOnScreen);
       }
       
       // private void CameraMove()

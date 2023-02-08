@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -33,16 +34,17 @@ namespace GameMain
     }
     public class UtilsComponent : GameFrameworkComponent
     {
+        public int startBlood = 100;
         public Dictionary<ConnectPair, bool> ConnectPairs = new Dictionary<ConnectPair, bool>();
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;
         public GameObject cardNode = null;
         public GameObject[] nodes = null;
-        public List<GameObject> entityNode = null;
-        public int depth1 = 0;
-        public int depth2 = 0;
-        public bool first = true;
-        public bool dragLine = false;
+        public int[] cardCost = null;
+        [HideInInspector] public List<GameObject> entityNode = null;
+        [HideInInspector] public int depth1 = 0;
+        [HideInInspector] public int depth2 = 0;
+        [HideInInspector] public bool dragLine = false;
         public int Blood
         {
             get;
@@ -51,8 +53,15 @@ namespace GameMain
 
         private void Start()
         {
-            Blood = 100;
+            Blood = startBlood;
             entityNode = new List<GameObject>();
+        }
+
+        public void ShowCardPackage()
+        {
+            var node = Instantiate(GameEntry.Utils.cardNode, new Vector3(2, 0, 10.5f), 
+                Quaternion.Euler(0, 0, 0));
+            GameEntry.Utils.entityNode.Add(node);
         }
     }
 }

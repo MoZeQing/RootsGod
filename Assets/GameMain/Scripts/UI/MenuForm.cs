@@ -74,7 +74,6 @@ namespace GameMain
             if (m_Director.time >= m_Director.duration - 0.1f)
             {
                 m_IsOver = true;
-                GameEntry.Utils.first = false;
                 m_Director2.SetActive(true);
             }
         }
