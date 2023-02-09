@@ -45,11 +45,13 @@ namespace GameMain
         private void OnEnable()
         {
             GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
         }
 
         private void OnDisable()
         {
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+            GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
         }
 
         private void Update()
@@ -76,7 +78,7 @@ namespace GameMain
             //Debug.Log(m_NodeData.Total);
             if (m_NodeData.NodeState != NodeState.Active)
                 return;
-
+            m_NodeData.NodeType = NodeType.BlockingNode;
             if (!m_IsAdd)
             {
                 GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
@@ -100,7 +102,14 @@ namespace GameMain
             m_NodeData.Select = ne.Select;
             mFrame.SetActive(m_NodeData.Select);
         }
+        
+        private void SetRigidType(object sender,GameEventArgs e)
+        {
+            SetRigidbodyTypeEventArgs ne = (SetRigidbodyTypeEventArgs)e;
+            m_Rigidbody2D.bodyType = ne.Type;
+        }
 
+        
         private void SetRigid()
         {
             m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
@@ -140,11 +149,32 @@ namespace GameMain
                 {
                     if (GameEntry.Utils.dragLine)
                         return;
+                    m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
                     GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }
+        }
+        
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            Line line = null;
+            if (!other.TryGetComponent(out line))
+                return;
+            if (m_NodeData.NodeState == NodeState.InActive)
+                return;
+            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(false));
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            Line line = null;
+            if (!other.TryGetComponent(out line))
+                return;
+            if (m_NodeData.NodeState == NodeState.InActive)
+                return;
+            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
         }
     }
 }

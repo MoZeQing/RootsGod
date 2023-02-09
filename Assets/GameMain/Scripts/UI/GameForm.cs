@@ -22,6 +22,7 @@ namespace GameMain
         [SerializeField] private Text mLineCostText = null;
         [SerializeField] private Image mCountProgress = null;
         [SerializeField] private GameObject mGuideImage = null;
+        [SerializeField] private Text mTipsText = null;
 
         [Header("GameOver")] 
         [SerializeField] private GameObject mDie = null;
@@ -36,7 +37,7 @@ namespace GameMain
             base.OnOpen(userData);
             GameEntry.Event.Subscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Subscribe(AddIncomeEventArgs.EventId,AddIncome);
-            GameEntry.Event.Subscribe(ShowLineCostEventArgs.EventId,ShowLineCost);
+            GameEntry.Event.Subscribe(ShowTipsEventArgs.EventId,ShowTips);
             GameEntry.Utils.Blood = GameEntry.Utils.startBlood;
             mTargetGameState = 15;
             m_GameOver = false;
@@ -60,7 +61,7 @@ namespace GameMain
             base.OnClose(isShutdown, userData);
             GameEntry.Event.Unsubscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Unsubscribe(AddIncomeEventArgs.EventId,AddIncome);
-            GameEntry.Event.Unsubscribe(ShowLineCostEventArgs.EventId,ShowLineCost);
+            GameEntry.Event.Unsubscribe(ShowTipsEventArgs.EventId,ShowTips);
         }
 
         private void Update()
@@ -78,6 +79,14 @@ namespace GameMain
             m_LineCostBg.anchoredPosition =Input.mousePosition - vec;
             //Debug.Log(Input.mousePosition);
             mLineCostText.text = GameEntry.Utils.lineCost.ToString();
+            if (GameEntry.Utils.Blood >= GameEntry.Utils.lineCost)
+            {
+                mLineCostText.color = Color.white;
+            }
+            else
+            {
+                mLineCostText.color = Color.black;
+            }
         }
         
         public void OnQuitButtonClick()
@@ -184,10 +193,19 @@ namespace GameMain
             m_IncomePerSecond += ne.Income;
         }
 
-        private void ShowLineCost(object sender, GameEventArgs e)
+        private void ShowTips(object sender, GameEventArgs e)
         {
-            ShowLineCostEventArgs ne = (ShowLineCostEventArgs)e;
-            m_LineCostBg.gameObject.SetActive(ne.Active);
+            ShowTipsEventArgs ne = (ShowTipsEventArgs)e;
+            switch (ne.TipType)
+            {
+                case 0:
+                    m_LineCostBg.gameObject.SetActive(ne.Active);
+                    break;
+                case 1:
+                    mTipsText.gameObject.SetActive(ne.Active);
+                    break;
+            }
+            
         }
     }
 }

@@ -5,6 +5,6 @@ using UnityEngine;
 public static class UCS
 {
     public static string ProcedureMain = "GameMain.ProcedureMain";
-    public static int BloodPerUnit = 10;
+    public static int BloodPerUnit = 20;
     
 }

@@ -112,6 +112,7 @@ namespace GameMain
                     }
                     Debug.Log(m_curPower);
                     //Debug.Log(m_curPower * 2 - m_PrePower * 2);
+                    m_NodeData.ParentNodes[i].NodeType = NodeType.BlockingNode;
                     GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create((m_curPower - prePower) * 2));
                 }
             }
@@ -152,6 +153,7 @@ namespace GameMain
                     Debug.Log(m_curPower);
                     //Debug.Log(m_curPower * 2 - m_PrePower * 2);
                     GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create((m_curPower - prePower) * 2));
+                    m_NodeData.ChildNodes[i].NodeType = NodeType.BlockingNode;
                 }
             }
         }

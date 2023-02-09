@@ -38,7 +38,7 @@ namespace GameMain
                 Log.Error("LineData object data is invalid.");
                 return;
             }
-            GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(true));
+            GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(0,true));
             GameEntry.Utils.dragLine = true;
             m_LineValid = true;
             m_PolygonCollider2D = transform.GetComponent<PolygonCollider2D>();
@@ -147,7 +147,8 @@ namespace GameMain
                         }
                         GameEntry.Utils.Blood -= (int)cost;
                         GameEntry.Utils.lineCost = 0;
-                        GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(false));
+                        GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(0,false));
+                        GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Dynamic));
                     }
                     else
                     {
@@ -182,8 +183,9 @@ namespace GameMain
             HideLineEventArgs ne = (HideLineEventArgs)e;
             if (mLineState == LineState.Connect)
                 return;
+            GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Dynamic));
             GameEntry.Utils.lineCost = 0;
-            GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(false));
+            GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(0,false));
             GameEntry.Utils.dragLine = false;
             GameEntry.Entity.HideEntity(Entity.Id);
         }
@@ -197,6 +199,11 @@ namespace GameMain
             if (m_Data.Self.TryGetComponent(out clear))
                 return;
             m_LineValid = ne.Valid;
+            if (!m_LineValid)
+            {
+                GameEntry.Sound.PlaySound(10020);
+            }
+            GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(1,!m_LineValid));
         }
     }
 }

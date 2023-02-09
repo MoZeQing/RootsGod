@@ -20,9 +20,11 @@ namespace GameMain
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
         private SpriteRenderer m_SpriteRenderer = null;
+        private Rigidbody2D m_Rigidbody2D = null;
         private Color32 m_Color32 = new Color32(176, 176, 176, 255);
         private void Start()
         {
+            m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.color = Color.red;
             m_NodeData = transform.GetComponent<NodeData>();
@@ -42,11 +44,13 @@ namespace GameMain
         private void OnEnable()
         {
             GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
         }
 
         private void OnDisable()
         {
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+            GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
         }
 
         private void Update()
@@ -87,16 +91,10 @@ namespace GameMain
             // m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
         }
 
-        private void AddParent(object sender, GameEventArgs e)
+        private void SetRigidType(object sender,GameEventArgs e)
         {
-            AddParentNodeEventArgs ne = (AddParentNodeEventArgs)e;
-            for (int i = 0; i < m_NodeData.ParentNodes.Count; i++)
-            {
-                if (m_NodeData.ParentNodes[i].NodeType == NodeType.Level2To1Node)
-                {
-                    
-                }
-            }
+            SetRigidbodyTypeEventArgs ne = (SetRigidbodyTypeEventArgs)e;
+            m_Rigidbody2D.bodyType = ne.Type;
         }
         
         private void SetSelect(object sender, GameEventArgs e)
@@ -142,6 +140,26 @@ namespace GameMain
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }
+        }
+        
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            Line line = null;
+            if (!other.TryGetComponent(out line))
+                return;
+            if (m_NodeData.NodeState == NodeState.InActive)
+                return;
+            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(false));
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            Line line = null;
+            if (!other.TryGetComponent(out line))
+                return;
+            if (m_NodeData.NodeState == NodeState.InActive)
+                return;
+            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
         }
     }
 }
