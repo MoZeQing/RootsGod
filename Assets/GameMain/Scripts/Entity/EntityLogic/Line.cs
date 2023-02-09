@@ -38,7 +38,7 @@ namespace GameMain
                 Log.Error("LineData object data is invalid.");
                 return;
             }
-
+            GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(true));
             GameEntry.Utils.dragLine = true;
             m_LineValid = true;
             m_PolygonCollider2D = transform.GetComponent<PolygonCollider2D>();
@@ -82,7 +82,8 @@ namespace GameMain
                     var distance = Vector3.Distance(m_LineRenderer.GetPosition(0),
                         m_LineRenderer.GetPosition(1));
                     //Debug.Log(distance);
-                    var cost = (Math.Round(distance,1)) * UCS.BloodPerUnit;
+                    var cost = Math.Round(distance,1) * UCS.BloodPerUnit;
+                    GameEntry.Utils.lineCost = cost;
                     if (m_LineValid && GameEntry.Utils.Blood >= cost)
                     {
                         m_Material.color = Color.white;
@@ -145,6 +146,8 @@ namespace GameMain
                             GameEntry.Sound.PlaySound(10009);
                         }
                         GameEntry.Utils.Blood -= (int)cost;
+                        GameEntry.Utils.lineCost = 0;
+                        GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(false));
                     }
                     else
                     {
@@ -179,6 +182,8 @@ namespace GameMain
             HideLineEventArgs ne = (HideLineEventArgs)e;
             if (mLineState == LineState.Connect)
                 return;
+            GameEntry.Utils.lineCost = 0;
+            GameEntry.Event.FireNow(this,ShowLineCostEventArgs.Create(false));
             GameEntry.Utils.dragLine = false;
             GameEntry.Entity.HideEntity(Entity.Id);
         }

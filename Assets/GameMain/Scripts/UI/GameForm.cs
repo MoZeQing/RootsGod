@@ -19,6 +19,7 @@ namespace GameMain
         [SerializeField] private Text mStateText = null;
         [SerializeField] private Text mTargetBloodText = null;
         [SerializeField] private Text mCardCostBloodText = null;
+        [SerializeField] private Text mLineCostText = null;
         [SerializeField] private Image mCountProgress = null;
         [SerializeField] private GameObject mGuideImage = null;
 
@@ -29,11 +30,13 @@ namespace GameMain
         private int m_TargetBlood = 0;
         private bool m_GameOver = false;
         private int m_BuyCount = 0;
+        private RectTransform m_LineCostBg = null;
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
             GameEntry.Event.Subscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Subscribe(AddIncomeEventArgs.EventId,AddIncome);
+            GameEntry.Event.Subscribe(ShowLineCostEventArgs.EventId,ShowLineCost);
             GameEntry.Utils.Blood = GameEntry.Utils.startBlood;
             mTargetGameState = 15;
             m_GameOver = false;
@@ -46,6 +49,8 @@ namespace GameMain
             mCountProgress.fillAmount = 0;
             m_BuyCount = 0;
             mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
+            m_LineCostBg = mLineCostText.transform.parent.gameObject.GetComponent<RectTransform>();
+            m_LineCostBg.gameObject.SetActive(false);
             SetGameState();
             UpdateTask().Coroutine();
         }
@@ -55,6 +60,7 @@ namespace GameMain
             base.OnClose(isShutdown, userData);
             GameEntry.Event.Unsubscribe(AddCostEventArgs.EventId,AddCost);
             GameEntry.Event.Unsubscribe(AddIncomeEventArgs.EventId,AddIncome);
+            GameEntry.Event.Unsubscribe(ShowLineCostEventArgs.EventId,ShowLineCost);
         }
 
         private void Update()
@@ -62,7 +68,16 @@ namespace GameMain
             if (m_GameOver)
                 return;
             UpdateUI();
+            LineCostFollow();
             CheckStateOver();
+        }
+
+        private void LineCostFollow()
+        {
+            var vec = new Vector3(0.5f *Screen.width, 0.5f * Screen.height);
+            m_LineCostBg.anchoredPosition =Input.mousePosition - vec;
+            //Debug.Log(Input.mousePosition);
+            mLineCostText.text = GameEntry.Utils.lineCost.ToString();
         }
         
         public void OnQuitButtonClick()
@@ -167,6 +182,12 @@ namespace GameMain
         {
             AddIncomeEventArgs ne = (AddIncomeEventArgs)e;
             m_IncomePerSecond += ne.Income;
+        }
+
+        private void ShowLineCost(object sender, GameEventArgs e)
+        {
+            ShowLineCostEventArgs ne = (ShowLineCostEventArgs)e;
+            m_LineCostBg.gameObject.SetActive(ne.Active);
         }
     }
 }

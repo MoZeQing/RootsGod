@@ -41,6 +41,7 @@ namespace GameMain
         public GameObject cardNode = null;
         public GameObject[] nodes = null;
         public int[] cardCost = null;
+        [HideInInspector] public double lineCost = 0;
         [HideInInspector] public List<GameObject> entityNode = null;
         [HideInInspector] public int depth1 = 0;
         [HideInInspector] public int depth2 = 0;

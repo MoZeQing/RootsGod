@@ -758,6 +758,7 @@ MonoBehaviour:
   - {fileID: 6521785833497008796, guid: 29d517470a0b9da40bb32a58337c3d66, type: 3}
   - {fileID: 2214085068418819451, guid: 0db10e5b4f3f5dd43b26b3082c7dfe5b, type: 3}
   cardCost: 5000000096000000fa000000
+  lineCost: 0
   entityNode: []
   depth1: 0
   depth2: 0

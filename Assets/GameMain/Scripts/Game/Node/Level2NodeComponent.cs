@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using GameFramework.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,11 +15,16 @@ namespace GameMain
         [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
         [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private float mLerpTime = 0.5f;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
+        private SpriteRenderer m_SpriteRenderer = null;
+        private Color32 m_Color32 = new Color32(176, 176, 176, 255);
         private void Start()
         {
+            m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
+            m_SpriteRenderer.color = Color.red;
             m_NodeData = transform.GetComponent<NodeData>();
             m_NodeData.NodeType = NodeType.Level2Node;
             m_NodeData.NodeState = NodeState.InActive;
@@ -52,6 +58,7 @@ namespace GameMain
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
+                m_SpriteRenderer.DOColor(m_Color32,mLerpTime);
                 m_NodeData.NodeState = NodeState.InActive;
                 GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-(2 - m_NodeData.Income) * 2));
                 m_IsAdd = true;
