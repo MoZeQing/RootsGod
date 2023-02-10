@@ -135,6 +135,7 @@ namespace GameMain
                 {
                     if (GameEntry.Utils.dragLine)
                         return;
+                    m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
                     GameEntry.Sound.PlaySound(10010);
                     var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
                     GameEntry.Entity.ShowLine(lineData);

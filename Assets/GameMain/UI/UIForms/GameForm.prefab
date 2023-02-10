@@ -527,7 +527,6 @@ MonoBehaviour:
   mTargetBloodText: {fileID: 3977369256592890481}
   mCardCostBloodText: {fileID: 5223230722215047148}
   mLineCostText: {fileID: 7040306273364604773}
-  mLineCostTipText: {fileID: 5345945637451438071}
   mCountProgress: {fileID: 3462086468105158807}
   mGuideImage: {fileID: 8480150181175748378}
   mTipsText: {fileID: 604462256}
@@ -1335,7 +1334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2346043037983808144
 RectTransform:
   m_ObjectHideFlags: 0
