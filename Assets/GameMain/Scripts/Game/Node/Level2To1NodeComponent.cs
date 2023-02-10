@@ -125,7 +125,7 @@ namespace GameMain
             if (ne.NodeData != m_NodeData)
                 return;
             Debug.Log(m_curPower);
-            if (m_curPower >= 3)
+            if (m_curPower >= mMaxPower)
             {
                 return;
             }
