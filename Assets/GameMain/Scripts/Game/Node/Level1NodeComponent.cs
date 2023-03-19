@@ -5,6 +5,7 @@ using DG.Tweening;
 using GameFramework.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using ET;
 
 namespace GameMain
 {
@@ -16,12 +17,18 @@ namespace GameMain
         [SerializeField] private GameObject mFrame = null;
         [SerializeField] private GameObject mProgress = null;
         [SerializeField] private float mLerpTime = 0.5f;
+        [SerializeField] private SpriteRenderer mZone = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private Rigidbody2D m_Rigidbody2D = null;
         private bool m_IsAdd = false;
         private bool m_IsFire = false;
         private SpriteRenderer m_SpriteRenderer = null;
+
+        private bool m_IsDead = false;
+        private float m_ZoneScale = 0;
+        [SerializeField] private float mMaxZoneScale = 5.0f;
+
         private Color32 m_Color32 = new Color32(176, 176, 176, 255);
         private void Start()
         {
@@ -40,6 +47,9 @@ namespace GameMain
             m_NodeData.Income = mIncome;
             m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
+            m_IsDead = false;
+            mZone.transform.localScale = Vector3.zero;
+            m_ZoneScale = 0;
         }
         
         private void OnEnable()
@@ -65,19 +75,32 @@ namespace GameMain
             //         m_NodeData.IsPhysic = false;
             //     }
             // }
+
+            mZone.transform.localScale = new Vector3(m_ZoneScale,m_ZoneScale,1);
+            if(m_IsDead)
+            {
+                m_SpriteRenderer.color = Color.white;
+                ZoneTask().Coroutine();
+                print("Die0");
+                mZone.gameObject.SetActive(true);
+                m_IsDead = false;
+            }
+
+            if (m_NodeData.NodeState != NodeState.Active)
+                return;
             
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
                 m_SpriteRenderer.DOColor(m_Color32,mLerpTime);
                 m_NodeData.NodeState = NodeState.InActive;
+                m_IsDead = true;
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
             mProgress.transform.SetLocalScaleX(1-(1 - m_NodeData.Total / mTotal));
             //Debug.Log(m_NodeData.Total);
-            if (m_NodeData.NodeState != NodeState.Active)
-                return;
+            
             m_NodeData.NodeType = NodeType.BlockingNode;
             if (!m_IsAdd)
             {
@@ -175,6 +198,20 @@ namespace GameMain
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
             GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
+        }
+
+        private async ETTask ZoneTask()
+        {       
+            while(enabled)
+            {
+                await GameEntry.Timer.WaitSeconds(0.1f);
+                if(m_ZoneScale >= mMaxZoneScale)
+                {
+                    return;
+                }
+                m_ZoneScale += 0.1f;
+            }
+            
         }
     }
 }

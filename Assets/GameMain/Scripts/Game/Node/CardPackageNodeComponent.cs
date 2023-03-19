@@ -106,7 +106,7 @@ namespace GameMain
             for (int i = 0; i < mDrawNum; i++)
             {
                 Debug.Log("第" + i +"抽");
-                var randomNum = GetNode(GameEntry.Utils.depth1,GameEntry.Utils.depth2);
+                var randomNum = GameEntry.Utils.rand(GameEntry.Utils.normalPoolDic,100);
                 var entity = Instantiate(GameEntry.Utils.nodes[randomNum], transform.position,
                     Quaternion.Euler(0, 0, 0));
                 var rigid2D = entity.GetComponent<Rigidbody2D>();
