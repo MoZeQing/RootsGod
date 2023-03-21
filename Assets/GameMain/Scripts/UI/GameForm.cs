@@ -115,7 +115,11 @@ namespace GameMain
             if (m_BuyCount > GameEntry.Utils.cardCost.Length - 1)
                 m_BuyCount--;
             mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
-            GameEntry.Utils.ShowCardPackage();
+
+            //Scripta 存某个名称物体，遍历所有子节点，存位置 画个Save按钮，按一下执行
+
+
+            //GameEntry.Utils.ShowCardPackage();
         }
 
         private void UpdateUI()

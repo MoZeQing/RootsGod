@@ -11,42 +11,81 @@ namespace GameMain
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
+        private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private Vector3 m_MousePositionInWorld = Vector3.zero;
         private bool m_Follow = false;
-        private void Start()
+        private SpriteRenderer m_SpriteRenderer = null;
+
+        protected override void OnInit(object userData)
         {
-            m_NodeData = transform.GetComponent<NodeData>();
+            base.OnInit(userData);
+            m_Data = userData as ComponentData;
+            m_NodeData = m_Data.NodeData;
+            GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[6];
             m_NodeData.NodeType = NodeType.EmptyNode;
             m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
+
+            mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
-            m_NodeData.Costable = false;
-            m_NodeData.Movable = false;
-            m_NodeData.Connectable = false;
-            m_NodeData.Total = 0;
-            m_NodeData.Income = 0;
-            m_NodeData.CostPersecond = 1;
         }
-        
-        private void OnEnable()
+        //private void Start()
+        //{
+        //    m_NodeData = transform.GetComponent<NodeData>();
+        //    m_NodeData.NodeType = NodeType.EmptyNode;
+        //    m_NodeData.NodeState = NodeState.Active;
+        //    m_NodeData.Select = false;
+        //    mFrame.SetActive(m_NodeData.Select);
+        //    m_NodeData.Costable = false;
+        //    m_NodeData.Movable = false;
+        //    m_NodeData.Connectable = false;
+        //    m_NodeData.Total = 0;
+        //    m_NodeData.Income = 0;
+        //    m_NodeData.CostPersecond = 1;
+        //}
+
+        protected override void OnShow(object userData)
         {
-            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            base.OnShow(userData);
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
         }
 
-        private void OnDisable()
+        protected override void OnHide(bool isShutdown, object userData)
         {
-            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+            base.OnHide(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
         }
 
-        private void Update()
+        //private void OnEnable()
+        //{
+        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
+
+        //private void OnDisable()
+        //{
+        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
+
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
             if (!m_Follow)
                 return;
             GetMousePos(out m_MousePositionInWorld);
             transform.position = m_MousePositionInWorld;
         }
+
+        //private void Update()
+        //{
+        //    if (!m_Follow)
+        //        return;
+        //    GetMousePos(out m_MousePositionInWorld);
+        //    transform.position = m_MousePositionInWorld;
+        //}
         
         private void SetSelect(object sender, GameEventArgs e)
         {

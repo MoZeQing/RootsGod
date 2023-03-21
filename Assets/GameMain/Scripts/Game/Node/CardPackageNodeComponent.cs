@@ -9,20 +9,22 @@ using Random = UnityEngine.Random;
 
 namespace GameMain
 {
-    public class CardPackageNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
+    public class CardPackageNodeComponent : Entity, IPointerDownHandler,IPointerUpHandler
     {
         [SerializeField] private int mDepth = 4;
         [SerializeField] private GameObject mFrame = null;
         [SerializeField] private GameObject[] mPos = null;
         [SerializeField] private int mDrawNum = 3;
         [SerializeField] private float mCardMoveTime = 0.5f;
+        private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private Vector3 m_MousePositionInWorld = Vector3.zero;
         private bool m_Follow = false;
+        private SpriteRenderer m_SpriteRenderer = null;
+
         private void Start()
         {
-            m_NodeData = transform.GetComponent<NodeData>();
             m_NodeData.NodeType = NodeType.CardPackage;
             m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
@@ -34,24 +36,44 @@ namespace GameMain
             m_NodeData.Income = 0;
             m_NodeData.CostPersecond = 1;
         }
-        
-        private void OnEnable()
+
+        protected override void OnShow(object userData)
         {
-            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            base.OnShow(userData);
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
         }
 
-        private void OnDisable()
+        protected override void OnHide(bool isShutdown, object userData)
         {
-            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+            base.OnHide(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
         }
 
-        private void Update()
+        //private void OnEnable()
+        //{
+        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
+
+        //private void OnDisable()
+        //{
+        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
+
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
             if (!m_Follow)
                 return;
             GetMousePos(out m_MousePositionInWorld);
             transform.parent.position = m_MousePositionInWorld;
         }
+        //private void Update()
+        //{
+        //    if (!m_Follow)
+        //        return;
+        //    GetMousePos(out m_MousePositionInWorld);
+        //    transform.parent.position = m_MousePositionInWorld;
+        //}
         
         private void SetSelect(object sender, GameEventArgs e)
         {

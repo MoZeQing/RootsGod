@@ -19,20 +19,20 @@ namespace GameMain
     /// </summary>
     public enum NodeType
     {
-        Unknown,
-        CenterNode,
-        Level1Node,
-        Level2Node,
-        Level2To1Node,
-        EmptyNode,
-        BlockingNode,
-        ClearNode,
-        CardPackage,
+        Unknown,//未知
+        CenterNode,//中心节点
+        Level1Node,//等级1节点（牛牛）
+        Level2Node,//等级2节点（鼠鼠）
+        Level2To1Node,//等级2到1节点（消化）
+        EmptyNode,//空节点
+        BlockingNode,//阻挡节点
+        ClearNode,//腐蚀节点
+        CardPackage,//卡包
         //Level3To2Node,
         //Level3Node,
         //BoomNode,
     }
-    public class NodeData : MonoBehaviour
+    public class NodeData1 : MonoBehaviour
     {
         
         /// <summary>

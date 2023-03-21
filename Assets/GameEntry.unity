@@ -436,7 +436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[0].m_Name
@@ -448,11 +448,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[2].m_Name
-      value: Weapon
+      value: Node
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[3].m_Name
-      value: Armor
+      value: Level1Node
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[4].m_Name
@@ -476,11 +476,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[2].m_InstanceCapacity
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[3].m_InstanceCapacity
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[4].m_InstanceCapacity
@@ -504,11 +504,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[2].m_InstanceExpireTime
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[3].m_InstanceExpireTime
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[4].m_InstanceExpireTime
@@ -532,11 +532,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[2].m_InstanceAutoReleaseInterval
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[3].m_InstanceAutoReleaseInterval
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_EntityGroups.Array.data[4].m_InstanceAutoReleaseInterval
@@ -749,6 +749,16 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: 950635973f97a5c4ea589c9c489195c8, type: 2}
   - {fileID: 2100000, guid: 08602b4da6aef864ea033fff07f4388d, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: 7bfd2811f1a30a0499f4703318de2cd2, type: 3}
+  - {fileID: 21300000, guid: 6ed00e4b3b60c7f45807460164259dad, type: 3}
+  - {fileID: 21300000, guid: 0350ac04e221cd44ab74b5c5fa10bc1b, type: 3}
+  - {fileID: 21300000, guid: f9da6c347725fa4479024ee4dacff968, type: 3}
+  - {fileID: 21300000, guid: e84f94b625d4e5b488c0a0e9bd23e525, type: 3}
+  - {fileID: 21300000, guid: 80ad0e5d07a15c5429f541e6b715f80d, type: 3}
+  - {fileID: 21300000, guid: b9f18cb5c52abb247869add82d047c64, type: 3}
+  - {fileID: 21300000, guid: e6ed832617721b04faf2d9a6297c15c9, type: 3}
+  - {fileID: 21300000, guid: 769ddaa8e92dc124193f30187bad187a, type: 3}
   cardNode: {fileID: 6872714315322057995, guid: 9992a36f3089cad42a435ac3dc84a4b8, type: 3}
   nodes:
   - {fileID: 8882977989780133709, guid: 20a1d120d1f53f54ca959ff704806d95, type: 3}

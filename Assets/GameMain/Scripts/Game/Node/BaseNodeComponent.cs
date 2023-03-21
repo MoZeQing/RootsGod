@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GameMain
 {
-    public abstract class BaseNodeComponent : MonoBehaviour
+    public abstract class BaseNodeComponent : Entity
     {
 
     }

@@ -40,9 +40,67 @@ namespace GameMain
             entityComponent.AttachEntity(entity.Entity, ownerId, parentTransformPath, userData);
         }
 
+        /// <summary>
+        /// 实体管理的线
+        /// </summary>
+        /// <param name="entityComponent"></param>
+        /// <param name="data"></param>
         public static void ShowLine(this EntityComponent entityComponent, LineData data)
         {
             entityComponent.ShowEntity(typeof(Line), "Line", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        //public static void ShowLine(this EntityComponent entityComponent, NodeData data)
+        //{
+        //    entityComponent.ShowEntity(typeof(Node1), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        //}
+
+        //public static void ShowLine(this EntityComponent entityComponent, NodeData data)
+        //{
+        //    entityComponent.ShowEntity(typeof(Node2), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        //}
+
+
+        public static void ShowNode(this EntityComponent entityComponent, NodeData data)
+        {
+            entityComponent.ShowEntity(typeof(Node), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowCenterNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(CenterNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowLevel1Node(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(Level1NodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowLevel2Node(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(Level2NodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowLevel2To1Node(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(Level2To1NodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowEmptyNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(EmptyNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowBlockingNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(BlockingNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowClearNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(ClearNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowCardPackage(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(CardPackageNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
         }
 
         public static void ShowEffect(this EntityComponent entityComponent, EffectData data)

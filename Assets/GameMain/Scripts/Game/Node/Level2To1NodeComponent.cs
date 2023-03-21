@@ -11,7 +11,9 @@ namespace GameMain
     {
         [SerializeField] private int mMaxPower = 3;
         [SerializeField] private GameObject mFrame = null;
+        private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
+        private SpriteRenderer m_SpriteRenderer = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
         private int m_curPower = 0;
@@ -19,38 +21,79 @@ namespace GameMain
 
         private bool m_Follow = false;
         private Vector3 m_MousePositionInWorld = Vector3.zero;
-        private void Start()
+
+        protected override void OnInit(object userData)
         {
-            m_NodeData = transform.GetComponent<NodeData>();
+            base.OnInit(userData);
+            m_Data = userData as ComponentData;
+            m_NodeData = m_Data.NodeData;
+            GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[3];
             m_NodeData.NodeType = NodeType.Level2To1Node;
             m_NodeData.NodeState = NodeState.InActive;
             m_NodeData.Select = false;
+
+            mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
-            m_NodeData.Costable = false;
-            m_NodeData.Movable = false;
-            m_NodeData.Connectable = true;
-            m_NodeData.Total = 100;
-            m_NodeData.Income = 0;
-            m_NodeData.CostPersecond = 1;
+
+            //m_NodeData.Costable = false;
+            //m_NodeData.Movable = false;
+            //m_NodeData.Connectable = true;
+            //m_NodeData.Total = 100;
+            //m_NodeData.Income = 0;
+            //m_NodeData.CostPersecond = 1;
             m_IsAdd = false;
         }
-        
-        private void OnEnable()
+        //private void Start()
+        //{
+        //    m_NodeData = transform.GetComponent<NodeData>();
+        //    m_NodeData.NodeType = NodeType.Level2To1Node;
+        //    m_NodeData.NodeState = NodeState.InActive;
+        //    m_NodeData.Select = false;
+        //    mFrame.SetActive(m_NodeData.Select);
+        //    m_NodeData.Costable = false;
+        //    m_NodeData.Movable = false;
+        //    m_NodeData.Connectable = true;
+        //    m_NodeData.Total = 100;
+        //    m_NodeData.Income = 0;
+        //    m_NodeData.CostPersecond = 1;
+        //    m_IsAdd = false;
+        //}
+
+        protected override void OnShow(object userData)
         {
-            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-            GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId,AddParent);
-            GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId,AddChild);
+            base.OnShow(userData);
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
+            GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId, AddParent);
+            GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId, AddChild);
         }
 
-        private void OnDisable()
+        protected override void OnHide(bool isShutdown, object userData)
         {
-            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-            GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId,AddParent);
-            GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId,AddChild);
+            base.OnHide(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
+            GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId, AddParent);
+            GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId, AddChild);
         }
 
-        private void Update()
+        //private void OnEnable()
+        //{
+        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+        //    GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId,AddParent);
+        //    GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId,AddChild);
+        //}
+
+        //private void OnDisable()
+        //{
+        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+        //    GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId,AddParent);
+        //    GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId,AddChild);
+        //}
+
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
@@ -58,26 +101,41 @@ namespace GameMain
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
-            
+
             if (!m_Follow)
                 return;
             GetMousePos(out m_MousePositionInWorld);
             transform.position = m_MousePositionInWorld;
-            // if (m_NodeData.NodeState != NodeState.Active)
-            //     return;
-            //
-            // if (!m_IsAdd)
-            // {
-            //     m_NodeData.Income = 2;
-            //     m_IsAdd = true;
-            // }
-            // if (m_NodeData.Total < m_NodeData.Income)
-            // {
-            //     //GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
-            //     return;
-            // }
-            // m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
         }
+        //private void Update()
+        //{
+        //    if (m_NodeData.Total <= 0)
+        //    {
+        //        m_NodeData.Total = 0;
+        //        m_NodeData.NodeState = NodeState.InActive;
+        //        return;
+        //    }
+        //    m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
+            
+        //    if (!m_Follow)
+        //        return;
+        //    GetMousePos(out m_MousePositionInWorld);
+        //    transform.position = m_MousePositionInWorld;
+        //    // if (m_NodeData.NodeState != NodeState.Active)
+        //    //     return;
+        //    //
+        //    // if (!m_IsAdd)
+        //    // {
+        //    //     m_NodeData.Income = 2;
+        //    //     m_IsAdd = true;
+        //    // }
+        //    // if (m_NodeData.Total < m_NodeData.Income)
+        //    // {
+        //    //     //GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+        //    //     return;
+        //    // }
+        //    // m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
+        //}
 
         private void AddParent(object sender, GameEventArgs e)
         {

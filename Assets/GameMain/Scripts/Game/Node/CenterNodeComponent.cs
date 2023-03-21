@@ -11,28 +11,52 @@ namespace GameMain
     public class CenterNodeComponent : BaseNodeComponent, IPointerDownHandler
     {
         [SerializeField] private int mCostValue = 0;
+        private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
+        private SpriteRenderer m_SpriteRenderer = null;
 
-        private void Start()
+        protected override void OnInit(object userData)
         {
-            m_NodeData = transform.GetComponent<NodeData>();
+            base.OnInit(userData);
+            m_Data = userData as ComponentData;
+            m_NodeData = m_Data.NodeData;
+            GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[8];
             m_NodeData.NodeType = NodeType.CenterNode;
             m_NodeData.NodeState = NodeState.InActive;
-            m_NodeData.Select = false;
-            m_NodeData.Costable = false;
-            m_NodeData.Movable = false;
-            m_NodeData.Connectable = true;
+        }
+        //private void Start()
+        //{
+        //    m_NodeData = transform.GetComponent<NodeData>();
+        //    m_NodeData.NodeType = NodeType.CenterNode;
+        //    m_NodeData.NodeState = NodeState.InActive;
+        //    m_NodeData.Select = false;
+        //    m_NodeData.Costable = false;
+        //    m_NodeData.Movable = false;
+        //    m_NodeData.Connectable = true;
+        //}
+
+        protected override void OnShow(object userData)
+        {
+            base.OnShow(userData);
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
         }
 
-        private void OnEnable()
+        protected override void OnHide(bool isShutdown, object userData)
         {
-            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            base.OnHide(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
         }
+        //private void OnEnable()
+        //{
+        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
 
-        private void OnDisable()
-        {
-            GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-        }
+        //private void OnDisable()
+        //{
+        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
+        //}
 
         private void SetSelect(object sender, GameEventArgs e)
         {

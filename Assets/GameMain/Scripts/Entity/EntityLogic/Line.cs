@@ -6,6 +6,9 @@ using Random = UnityEngine.Random;
 
 namespace GameMain
 {
+    /// <summary>
+    /// 线的状态
+    /// </summary>
     public enum LineState
     {
         Undefined,
@@ -30,8 +33,9 @@ namespace GameMain
         protected override void OnShow(object userData)
         {
             base.OnShow(userData);
-            GameEntry.Event.Subscribe(HideLineEventArgs.EventId,HideLine);
+            GameEntry.Event.Subscribe(HideLineEventArgs.EventId,HideLine);//注册事件
             GameEntry.Event.Subscribe(LineVaildEventArgs.EventId,LineValid);
+
             m_Data = userData as LineData;
             if (m_Data == null)
             {
@@ -60,18 +64,18 @@ namespace GameMain
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-            switch (mLineState)
+            switch (mLineState)//根据线的状态
             {
                 case LineState.Undefined:
                     break;
-                case LineState.NotConnect:
+                case LineState.NotConnect://未连接状态（即线在鼠标上的状态）
                     GetMousePos(out m_MousePositionInWorld);
                     m_LineRenderer.SetPosition(1,m_MousePositionInWorld);
                     Vector2 startPos = m_Data.Self.transform.position;
                     Vector2 endPos = m_MousePositionInWorld;
                     Vector2 seVec = startPos - endPos;
                     Vector2 rotateVec = new Vector2(-seVec.y, seVec.x).normalized;
-                    m_PolygonCollider2D.points = new Vector2[]
+                    m_PolygonCollider2D.points = new Vector2[]//多边形碰撞箱赋值
                     {
                         startPos + rotateVec * mWidth,
                         startPos - rotateVec * mWidth,
@@ -82,7 +86,7 @@ namespace GameMain
                     var distance = Vector3.Distance(m_LineRenderer.GetPosition(0),
                         m_LineRenderer.GetPosition(1));
                     //Debug.Log(distance);
-                    var cost = Math.Round(distance,1) * UCS.BloodPerUnit;
+                    var cost = Math.Round(distance,1) * UCS.BloodPerUnit;//计算花费，USC是写死的花费系数
                     GameEntry.Utils.lineCost = cost;
                     if (m_LineValid && GameEntry.Utils.Blood >= cost)
                     {
@@ -161,7 +165,10 @@ namespace GameMain
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+        /// <summary>
+        /// 获取鼠标坐标
+        /// </summary>
+        /// <param name="mousePositionInWorld"></param>
         private void GetMousePos(out Vector3 mousePositionInWorld)
         {
             m_MousePositionOnScreen = Input.mousePosition;

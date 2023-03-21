@@ -16,8 +16,8 @@ namespace GameMain
     {
         private void Start()
         {
-            InitBuiltinComponents();
-            InitCustomComponents();
+            InitBuiltinComponents();//启动内部组件
+            InitCustomComponents();//启动自定义组件
         }
     }
 }

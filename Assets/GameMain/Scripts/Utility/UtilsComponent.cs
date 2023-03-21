@@ -38,6 +38,7 @@ namespace GameMain
         public Dictionary<ConnectPair, bool> ConnectPairs = new Dictionary<ConnectPair, bool>();
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;
+        public Sprite[] sprites = null;//½ÚµãµÄÌùÍ¼
         public GameObject cardNode = null;
         public GameObject[] nodes = null;
         public int[] cardCost = null;
