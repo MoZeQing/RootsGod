@@ -5,7 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 // 此文件由工具自动生成，请勿直接修改。
-// 生成时间：2023-03-13 21:18:39.503
+// 生成时间：2023-02-07 22:19:30.341
 //------------------------------------------------------------
 
 using GameFramework;
@@ -46,18 +46,18 @@ namespace GameMain
         }
 
         /// <summary>
-        /// 获取普通卡池概率。
+        /// 获取卡池深度。
         /// </summary>
-        public string NormalPool
+        public int PoolDepth1
         {
             get;
             private set;
         }
 
         /// <summary>
-        /// 获取菌毯卡池概率。
+        /// 获取卡池深度2。
         /// </summary>
-        public string CreepPool
+        public int PoolDepth2
         {
             get;
             private set;
@@ -76,8 +76,8 @@ namespace GameMain
             m_Id = int.Parse(columnStrings[index++]);
             index++;
             Cost = int.Parse(columnStrings[index++]);
-            NormalPool = columnStrings[index++];
-            CreepPool = columnStrings[index++];
+            PoolDepth1 = int.Parse(columnStrings[index++]);
+            PoolDepth2 = int.Parse(columnStrings[index++]);
 
             GeneratePropertyArray();
             return true;
@@ -91,8 +91,8 @@ namespace GameMain
                 {
                     m_Id = binaryReader.Read7BitEncodedInt32();
                     Cost = binaryReader.Read7BitEncodedInt32();
-                    NormalPool = binaryReader.ReadString();
-                    CreepPool = binaryReader.ReadString();
+                    PoolDepth1 = binaryReader.Read7BitEncodedInt32();
+                    PoolDepth2 = binaryReader.Read7BitEncodedInt32();
                 }
             }
 
@@ -100,9 +100,46 @@ namespace GameMain
             return true;
         }
 
+        private KeyValuePair<int, int>[] m_PoolDepth = null;
+
+        public int PoolDepthCount
+        {
+            get
+            {
+                return m_PoolDepth.Length;
+            }
+        }
+
+        public int GetPoolDepth(int id)
+        {
+            foreach (KeyValuePair<int, int> i in m_PoolDepth)
+            {
+                if (i.Key == id)
+                {
+                    return i.Value;
+                }
+            }
+
+            throw new GameFrameworkException(Utility.Text.Format("GetPoolDepth with invalid id '{0}'.", id));
+        }
+
+        public int GetPoolDepthAt(int index)
+        {
+            if (index < 0 || index >= m_PoolDepth.Length)
+            {
+                throw new GameFrameworkException(Utility.Text.Format("GetPoolDepthAt with invalid index '{0}'.", index));
+            }
+
+            return m_PoolDepth[index].Value;
+        }
+
         private void GeneratePropertyArray()
         {
-
+            m_PoolDepth = new KeyValuePair<int, int>[]
+            {
+                new KeyValuePair<int, int>(1, PoolDepth1),
+                new KeyValuePair<int, int>(2, PoolDepth2),
+            };
         }
     }
 }

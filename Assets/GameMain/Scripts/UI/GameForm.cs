@@ -1,6 +1,5 @@
-
+﻿
 using System;
-using System.Collections.Generic;
 using ET;
 using GameFramework.DataTable;
 using GameFramework.Event;
@@ -82,11 +81,11 @@ namespace GameMain
             mLineCostText.text = GameEntry.Utils.lineCost.ToString();
             if (GameEntry.Utils.Blood >= GameEntry.Utils.lineCost)
             {
-                mLineCostText.color = Color.black;
+                mLineCostText.color = Color.white;
             }
             else
             {
-                mLineCostText.color = new Color32(229, 223, 221, 225);
+                mLineCostText.color = Color.black;
             }
         }
         
@@ -180,27 +179,10 @@ namespace GameMain
             mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
             mTargetGameState = dtGameState.Count;
             m_TargetBlood = drGameState.Cost;
-            GameEntry.Utils.normalPoolDic.Clear();
-            GameEntry.Utils.creepPoolDic.Clear();
-
-            GameEntry.Utils.normalPoolDic = GetRandomDictionary(drGameState.NormalPool);
-            GameEntry.Utils.creepPoolDic  = GetRandomDictionary(drGameState.CreepPool);
+            GameEntry.Utils.depth1 = drGameState.PoolDepth1;
+            GameEntry.Utils.depth2 = drGameState.PoolDepth2;
             mTargetBloodText.text = m_TargetBlood.ToString();
             mStateText.text = mCurGameState.ToString("00");
-        }
-
-        private Dictionary<int,int> GetRandomDictionary(string pool)
-        {
-            string[] randomPairs = pool.Split(',');
-            Dictionary<int,int> randomPool = new Dictionary<int, int>();
-            foreach(var item in randomPairs)
-            {
-                string[] randomPair = item.Split('=');
-                var key = int.Parse(randomPair[0]);
-                var value = int.Parse(randomPair[1]);
-                randomPool.Add(key,value);
-            }
-            return randomPool;
         }
 
         private void AddCost(object sender,GameEventArgs e)

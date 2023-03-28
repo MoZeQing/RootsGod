@@ -140,7 +140,6 @@ namespace GameMain
                 {
                     GameEntry.Event.FireNow(this,SetSelectEventArgs.Create(false));
                     m_NodeData.Select = true;
-                    
                     mFrame.SetActive(m_NodeData.Select);
                 }
             }
