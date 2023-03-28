@@ -7,15 +7,15 @@ using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class ClearNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
+    public class EmptyNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private bool m_Follow = false;
         private Vector3 m_MousePositionInWorld = Vector3.zero;
+        private bool m_Follow = false;
         private SpriteRenderer m_SpriteRenderer = null;
 
         protected override void OnInit(object userData)
@@ -25,8 +25,8 @@ namespace GameMain
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
-            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[4];
-            m_NodeData.NodeType = NodeType.ClearNode;
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[6];
+            m_NodeData.NodeType = NodeType.EmptyNode;
             m_NodeData.NodeState = NodeState.Active;
             m_NodeData.Select = false;
 
@@ -36,7 +36,7 @@ namespace GameMain
         //private void Start()
         //{
         //    m_NodeData = transform.GetComponent<NodeData>();
-        //    m_NodeData.NodeType = NodeType.ClearNode;
+        //    m_NodeData.NodeType = NodeType.EmptyNode;
         //    m_NodeData.NodeState = NodeState.Active;
         //    m_NodeData.Select = false;
         //    mFrame.SetActive(m_NodeData.Select);
@@ -59,6 +59,7 @@ namespace GameMain
             base.OnHide(isShutdown, userData);
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
         }
+
         //private void OnEnable()
         //{
         //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
@@ -77,6 +78,7 @@ namespace GameMain
             GetMousePos(out m_MousePositionInWorld);
             transform.position = m_MousePositionInWorld;
         }
+
         //private void Update()
         //{
         //    if (!m_Follow)
@@ -96,7 +98,7 @@ namespace GameMain
         {
             switch (m_NodeData.NodeState)
             {
-                case NodeState.Unknown:
+                case NodeState.Undefined:
                     break;
                 case NodeState.InActive:
                     break;
@@ -117,6 +119,7 @@ namespace GameMain
             }
             else
             {
+                
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     if (!m_Follow)

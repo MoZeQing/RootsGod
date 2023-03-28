@@ -13,31 +13,42 @@ public class MTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(),10001,NodeType.BlockingNode, NodeState.Active)
+        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.CenterNode, NodeState.Active)
         {
-            Position = new Vector3(1, 1, 10),
-
+            Position = new Vector3(0, 1, 10),
         });
+
+        GameEntry.Entity.ShowCardPackage(new CardPackageData(GameEntry.Entity.GenerateSerialId(), 10003, CardPackageType.Normal)
+        {
+            Position = new Vector3(0, 1, 10),
+        });
+
+        //GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(),10001,NodeType.BlockingNode, NodeState.Active)
+        //{
+        //    Position = new Vector3(1, 1, 10),
+
+        //});
         GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.Level1Node, NodeState.Active)
         {
             Position = new Vector3(2, 1, 10),
         });
-        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.Level2Node, NodeState.Active)
-        {
-            Position = new Vector3(3, 1, 10),
-        });
-        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.Level2To1Node, NodeState.Active)
-        {
-            Position = new Vector3(4, 1, 10),
-        });
-        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.EmptyNode, NodeState.Active)
-        {
-            Position = new Vector3(5, 1, 10),
-        });
-        GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.ClearNode, NodeState.Active)
-        {
-            Position = new Vector3(6, 1, 10),
-        });
+        
+        //GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.Level2Node, NodeState.Active)
+        //{
+        //    Position = new Vector3(3, 1, 10),
+        //});
+        //GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.Level2To1Node, NodeState.Active)
+        //{
+        //    Position = new Vector3(4, 1, 10),
+        //});
+        //GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.EmptyNode, NodeState.Active)
+        //{
+        //    Position = new Vector3(5, 1, 10),
+        //});
+        //GameEntry.Entity.ShowNode(new NodeData(GameEntry.Entity.GenerateSerialId(), 10001, NodeType.ClearNode, NodeState.Active)
+        //{
+        //    Position = new Vector3(6, 1, 10),
+        //});
     }
 
 

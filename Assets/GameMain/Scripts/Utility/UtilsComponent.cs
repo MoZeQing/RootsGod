@@ -69,7 +69,7 @@ namespace GameMain
             GameEntry.Utils.entityNode.Add(node);
         }
 
-        //rate:几率数组（%），  total：几率总和（100%）
+        //rate:几率数组�?），  total：几率总和�?00%�?
         // Debug.Log(rand(new int[] { 10, 5, 15, 20, 30, 5, 5,10 }, 100));
         public int rand(int[] rate, int total)
         {
@@ -86,7 +86,7 @@ namespace GameMain
             return 0;
         }
 
-        //rate:几率数组（%），  total：几率总和（100%）
+        //rate:几率数组�?），  total：几率总和�?00%�?
         // Debug.Log(rand(new int[] { 10, 5, 15, 20, 30, 5, 5,10 }, 100));
         public int rand(Dictionary<int,int> rate, int total)
         {

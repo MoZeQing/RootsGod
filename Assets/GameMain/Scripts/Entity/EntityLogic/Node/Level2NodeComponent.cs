@@ -5,11 +5,10 @@ using DG.Tweening;
 using GameFramework.Event;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using ET;
 
 namespace GameMain
 {
-    public class Level1NodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class Level2NodeComponent : BaseNodeComponent, IPointerDownHandler
     {
         [SerializeField] private int mTotal = 0;
         [SerializeField] private int mIncome = 0;
@@ -20,15 +19,9 @@ namespace GameMain
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
-        private Rigidbody2D m_Rigidbody2D = null;
         private bool m_IsAdd = false;
-        private bool m_IsFire = false;
         private SpriteRenderer m_SpriteRenderer = null;
-
-        private bool m_IsDead = false;
-        private float m_ZoneScale = 0;
-        [SerializeField] private float mMaxZoneScale = 5.0f;
-
+        private Rigidbody2D m_Rigidbody2D = null;
         private Color32 m_Color32 = new Color32(176, 176, 176, 255);
 
         protected override void OnInit(object userData)
@@ -39,9 +32,8 @@ namespace GameMain
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
 
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
-            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[0];
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[1];
             m_SpriteRenderer.color = Color.red;
-
             m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
             m_NodeData.NodeType = NodeType.Level1Node;
             m_NodeData.NodeState = NodeState.InActive;
@@ -60,17 +52,14 @@ namespace GameMain
             m_NodeData.Income = mIncome;
             m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
-            m_IsDead = false;
-            m_ZoneScale = 0;
         }
-
         //private void Start()
         //{
+        //    m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
         //    m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
         //    m_SpriteRenderer.color = Color.red;
-        //    m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
         //    m_NodeData = transform.GetComponent<NodeData>();
-        //    m_NodeData.NodeType = NodeType.Level1Node;
+        //    m_NodeData.NodeType = NodeType.Level2Node;
         //    m_NodeData.NodeState = NodeState.InActive;
         //    m_NodeData.Select = false;
         //    mFrame.SetActive(m_NodeData.Select);
@@ -82,6 +71,7 @@ namespace GameMain
         //    m_NodeData.CostPersecond = mCostPerSecond;
         //    m_IsAdd = false;
         //}
+
 
         protected override void OnShow(object userData)
         {
@@ -96,7 +86,6 @@ namespace GameMain
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
             GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
         }
-
         //private void OnEnable()
         //{
         //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
@@ -112,87 +101,70 @@ namespace GameMain
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-            // if (m_NodeData.IsPhysic)
-            // {
-            //     m_NodeData.Connectable = false;
-            //     if (m_Rigidbody2D.velocity.magnitude <= 0.2f)
-            //     {
-            //         Invoke(nameof(SetRigid),0.5f);
-            //         m_NodeData.IsPhysic = false;
-            //     }
-            // }
-
+            if (m_IsAdd)
+            {
+                return;
+            }
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
                 m_SpriteRenderer.DOColor(m_Color32, mLerpTime);
                 m_NodeData.NodeState = NodeState.InActive;
-                m_IsDead = true;
+                GameEntry.Event.FireNow(this, AddIncomeEventArgs.Create(-(2 - m_NodeData.Income) * 2));
+                m_IsAdd = true;
                 return;
             }
             m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
-            mProgress.transform.SetLocalScaleX(1 - (1 - m_NodeData.Total / mTotal));
-            //Debug.Log(m_NodeData.Total);
-            
-            m_NodeData.NodeType = NodeType.BlockingNode;
-            if (!m_IsAdd)
-            {
-                GameEntry.Event.FireNow(this, AddIncomeEventArgs.Create(m_NodeData.Income));
-                m_IsAdd = true;
-            }
-            if (m_NodeData.Total < m_NodeData.Income)
-            {
-                if (!m_IsFire)
-                {
-                    GameEntry.Event.FireNow(this, AddIncomeEventArgs.Create(-m_NodeData.Income));
-                    m_IsFire = true;
-                }
-                return;
-            }
-            m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
-        }
 
+            if (m_NodeData.Income < 2)
+            {
+                m_NodeData.Total -= (2 - m_NodeData.Income) * Time.deltaTime;
+            }
+            mProgress.transform.SetLocalScaleX(1 - (1 - m_NodeData.Total / mTotal));
+        }
         //private void Update()
         //{
-        //    // if (m_NodeData.IsPhysic)
-        //    // {
-        //    //     m_NodeData.Connectable = false;
-        //    //     if (m_Rigidbody2D.velocity.magnitude <= 0.2f)
-        //    //     {
-        //    //         Invoke(nameof(SetRigid),0.5f);
-        //    //         m_NodeData.IsPhysic = false;
-        //    //     }
-        //    // }
-            
+        //    if (m_IsAdd)
+        //    {
+        //        return;
+        //    }
         //    if (m_NodeData.Total <= 0)
         //    {
         //        m_NodeData.Total = 0;
         //        m_SpriteRenderer.DOColor(m_Color32,mLerpTime);
         //        m_NodeData.NodeState = NodeState.InActive;
+        //        GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-(2 - m_NodeData.Income) * 2));
+        //        m_IsAdd = true;
         //        return;
         //    }
         //    m_NodeData.Total -= m_NodeData.CostPersecond * Time.deltaTime;
+            
+        //    if (m_NodeData.Income < 2)
+        //    {
+        //        m_NodeData.Total -= (2 - m_NodeData.Income) * Time.deltaTime;
+        //    }
         //    mProgress.transform.SetLocalScaleX(1-(1 - m_NodeData.Total / mTotal));
-        //    //Debug.Log(m_NodeData.Total);
-        //    if (m_NodeData.NodeState != NodeState.Active)
-        //        return;
-        //    m_NodeData.NodeType = NodeType.BlockingNode;
-        //    if (!m_IsAdd)
-        //    {
-        //        GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(m_NodeData.Income));
-        //        m_IsAdd = true;
-        //    }
-        //    if (m_NodeData.Total < m_NodeData.Income)
-        //    {
-        //        if (!m_IsFire)
-        //        {
-        //            GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
-        //            m_IsFire = true;
-        //        }
-        //        return;
-        //    }
-        //    m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
+        //    // if (m_NodeData.NodeState != NodeState.Active)
+        //    //     return;
+        //    //
+        //    // if (!m_IsAdd)
+        //    // {
+        //    //     m_NodeData.Income = 2;
+        //    //     m_IsAdd = true;
+        //    // }
+        //    // if (m_NodeData.Total < m_NodeData.Income)
+        //    // {
+        //    //     //GameEntry.Event.FireNow(this,AddIncomeEventArgs.Create(-m_NodeData.Income));
+        //    //     return;
+        //    // }
+        //    // m_NodeData.Total -= m_NodeData.Income * Time.deltaTime;
         //}
+
+        private void SetRigidType(object sender,GameEventArgs e)
+        {
+            SetRigidbodyTypeEventArgs ne = (SetRigidbodyTypeEventArgs)e;
+            m_Rigidbody2D.bodyType = ne.Type;
+        }
         
         private void SetSelect(object sender, GameEventArgs e)
         {
@@ -200,25 +172,12 @@ namespace GameMain
             m_NodeData.Select = ne.Select;
             mFrame.SetActive(m_NodeData.Select);
         }
-        
-        private void SetRigidType(object sender,GameEventArgs e)
-        {
-            SetRigidbodyTypeEventArgs ne = (SetRigidbodyTypeEventArgs)e;
-            m_Rigidbody2D.bodyType = ne.Type;
-        }
-
-        
-        private void SetRigid()
-        {
-            m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
-            m_NodeData.Connectable = true;
-        }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             switch (m_NodeData.NodeState)
             {
-                case NodeState.Unknown:
+                case NodeState.Undefined:
                     break;
                 case NodeState.InActive:
                     break;
@@ -240,8 +199,6 @@ namespace GameMain
             else
             {
                 if (!GameEntry.Utils.LinePairs.ContainsKey(transform))
-                    return;
-                if (!m_NodeData.Connectable)
                     return;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
@@ -273,20 +230,6 @@ namespace GameMain
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
             GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
-        }
-
-        private async ETTask ZoneTask()
-        {       
-            while(enabled)
-            {
-                await GameEntry.Timer.WaitSeconds(0.1f);
-                if(m_ZoneScale >= mMaxZoneScale)
-                {
-                    return;
-                }
-                m_ZoneScale += 0.1f;
-            }
-            
         }
     }
 }

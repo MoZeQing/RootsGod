@@ -55,10 +55,10 @@ namespace GameMain
         //    entityComponent.ShowEntity(typeof(Node1), "Node", Constant.AssetPriority.MyAircraftAsset, data);
         //}
 
-        //public static void ShowLine(this EntityComponent entityComponent, NodeData data)
-        //{
-        //    entityComponent.ShowEntity(typeof(Node2), "Node", Constant.AssetPriority.MyAircraftAsset, data);
-        //}
+        public static void ShowCardPackage(this EntityComponent entityComponent, CardPackageData data)
+        {
+            entityComponent.ShowEntity(typeof(CardPackage), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
 
 
         public static void ShowNode(this EntityComponent entityComponent, NodeData data)
@@ -100,7 +100,7 @@ namespace GameMain
 
         public static void ShowCardPackage(this EntityComponent entityComponent, ComponentData data)
         {
-            entityComponent.ShowEntity(typeof(CardPackageNodeComponent), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+            entityComponent.ShowEntity(typeof(CardPackage), "Node", Constant.AssetPriority.MyAircraftAsset, data);
         }
 
         public static void ShowEffect(this EntityComponent entityComponent, EffectData data)

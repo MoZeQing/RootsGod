@@ -124,7 +124,7 @@ namespace GameMain
         {
             switch (m_NodeData.NodeState)
             {
-                case NodeState.Unknown:
+                case NodeState.Undefined:
                     break;
                 case NodeState.InActive:
                     break;
