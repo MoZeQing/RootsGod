@@ -60,13 +60,6 @@ namespace GameMain
             m_NodeData.Income = mIncome;
             m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-            m_IsDead = false;
-            m_ZoneScale = 0;
-=======
->>>>>>> parent of 4c875e3a (Update Creep)
-=======
         }
         
         private void OnEnable()
@@ -133,14 +126,7 @@ namespace GameMain
             //         m_NodeData.IsPhysic = false;
             //     }
             // }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> parent of 4c875e3a (Update Creep)
             
->>>>>>> parent of 4c875e3a (Update Creep)
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
