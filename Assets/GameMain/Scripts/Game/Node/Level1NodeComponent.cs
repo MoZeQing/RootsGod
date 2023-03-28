@@ -17,7 +17,10 @@ namespace GameMain
         [SerializeField] private GameObject mProgress = null;
         [SerializeField] private float mLerpTime = 0.5f;
 <<<<<<< HEAD
+<<<<<<< HEAD
         private ComponentData m_Data = null;
+=======
+>>>>>>> parent of 4c875e3a (Update Creep)
 =======
 >>>>>>> parent of 4c875e3a (Update Creep)
         private NodeData m_NodeData = null;
@@ -58,9 +61,18 @@ namespace GameMain
             m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
             m_IsDead = false;
             m_ZoneScale = 0;
 =======
+>>>>>>> parent of 4c875e3a (Update Creep)
+=======
+        }
+        
+        private void OnEnable()
+        {
+            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
+            GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
 >>>>>>> parent of 4c875e3a (Update Creep)
         }
 
@@ -122,8 +134,11 @@ namespace GameMain
             //     }
             // }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> parent of 4c875e3a (Update Creep)
             
 >>>>>>> parent of 4c875e3a (Update Creep)
             if (m_NodeData.Total <= 0)

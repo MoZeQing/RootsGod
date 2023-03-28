@@ -1,6 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/GameMain/Scripts/Game/CardPackage.meta
 guid: ea3f3b526afff2d4985935c2e84fb96c
 folderAsset: yes
+========
+guid: ff4c4f8d42180174c9bc092437e2ca1f
+>>>>>>>> parent of 4c875e3a (Update Creep):Assets/GameMain/Scenes/JS6336.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
