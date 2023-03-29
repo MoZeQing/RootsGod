@@ -59,8 +59,8 @@ namespace GameMain
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     GameEntry.Event.FireNow(this, SetSelectEventArgs.Create(false));
-                    m_NodeData.Select = true;
-                    mFrame.SetActive(m_NodeData.Select);
+                    Select = true;
+                    //mFrame.SetActive(Select);
                 }
             }
             else

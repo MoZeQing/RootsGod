@@ -175,7 +175,7 @@ namespace GameMain
             }
 
             GameEntry.Sound.PlaySound(10018);
-            GameEntry.Utils.ShowCardPackage();
+            //GameEntry.Utils.ShowCardPackage();
             m_BuyCount = 0;
             mCardCostBloodText.text = GameEntry.Utils.cardCost[m_BuyCount].ToString();
             mTargetGameState = dtGameState.Count;

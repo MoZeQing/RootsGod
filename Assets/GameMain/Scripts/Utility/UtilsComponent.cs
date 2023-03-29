@@ -62,12 +62,12 @@ namespace GameMain
             creepPoolDic = new Dictionary<int, int>();
         }
 
-        public void ShowCardPackage()
-        {
-            var node = Instantiate(GameEntry.Utils.cardNode, new Vector3(2, 0, 10.5f), 
-                Quaternion.Euler(0, 0, 0));
-            GameEntry.Utils.entityNode.Add(node);
-        }
+        //public void ShowCardPackage()
+        //{
+        //    var node = Instantiate(GameEntry.Utils.cardNode, new Vector3(2, 0, 10.5f), 
+        //        Quaternion.Euler(0, 0, 0));
+        //    GameEntry.Utils.entityNode.Add(node);
+        //}
 
         //rate:几率数组�?），  total：几率总和�?00%�?
         // Debug.Log(rand(new int[] { 10, 5, 15, 20, 30, 5, 5,10 }, 100));
