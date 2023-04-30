@@ -745,7 +745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb69e503c3734ee4b8acd5a99cbe9ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startBlood: 100
+  startBlood: 1000
   materials:
   - {fileID: 2100000, guid: 950635973f97a5c4ea589c9c489195c8, type: 2}
   - {fileID: 2100000, guid: 08602b4da6aef864ea033fff07f4388d, type: 2}
@@ -759,6 +759,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b9f18cb5c52abb247869add82d047c64, type: 3}
   - {fileID: 21300000, guid: e6ed832617721b04faf2d9a6297c15c9, type: 3}
   - {fileID: 21300000, guid: 769ddaa8e92dc124193f30187bad187a, type: 3}
+  - {fileID: 21300000, guid: 67a3d559a625ac5499f105097a0fee16, type: 3}
+  - {fileID: 21300000, guid: bac2435092aa87948bb5cf27d000d870, type: 3}
   cardNode: {fileID: 6872714315322057995, guid: 9992a36f3089cad42a435ac3dc84a4b8, type: 3}
   nodes:
   - {fileID: 8882977989780133709, guid: 20a1d120d1f53f54ca959ff704806d95, type: 3}

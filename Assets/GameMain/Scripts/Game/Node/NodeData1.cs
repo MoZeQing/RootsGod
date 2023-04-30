@@ -30,7 +30,9 @@ namespace GameMain
         CardPackage,//卡包
         //Level3To2Node,
         //Level3Node,
-        //BoomNode,
+        BoomNode,
+        TreeNode,
+        LeafNode
     }
     public class NodeData1 : MonoBehaviour
     {

@@ -97,23 +97,25 @@ namespace GameMain
                             Mathf.Infinity,LayerMask.GetMask("Node"));
                         if (!hit)
                             return;
-                        if (hit.collider.transform.position == m_Data.Self.position)
+                        if (hit.collider.transform.position == m_Data.Self.position)//排除自身
                             return;
                         var connectPair = new ConnectPair(m_Data.Self, hit.transform);
                         if (GameEntry.Utils.ConnectPairs.ContainsKey(connectPair))
                         {
-                            if (GameEntry.Utils.ConnectPairs[connectPair])
+                            if (GameEntry.Utils.ConnectPairs[connectPair])//如果已经连接就直接跳过
                                 return;
                         }
-                        var selfNodeData = m_Data.Self.GetComponent<NodeData>();
-                        var hitNodeData = hit.transform.GetComponent<NodeData>();
+                        var selfNodeData = m_Data.Self.parent.GetComponent<Node>().NodeData;
+                        var hitNodeData = hit.transform.parent.GetComponent<Node>().NodeData;
                         if (hitNodeData.NodeType == NodeType.CardPackage)
                             return;
-
                         m_LineRenderer.SetPosition(1,hit.transform.position);
                         mLineState = LineState.Connect;
                         
                         GameEntry.Utils.dragLine = false;
+                        Debug.Log(m_Data.Self.name);
+                        Debug.Log(hit.transform);
+                        GameEntry.Utils.Lines.Add(new ConnectPair(m_Data.Self, hit.transform), this.m_Data);
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(m_Data.Self, hit.transform), true);
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(hit.transform, m_Data.Self), true);
                         if (!GameEntry.Utils.LinePairs.ContainsKey(hit.transform))
@@ -133,6 +135,7 @@ namespace GameMain
                         };
                         
                         hitNodeData.NodeState = NodeState.Active;
+                        hitNodeData.IsConnect = true;
                         if (!selfNodeData.ChildNodes.Contains(hitNodeData))
                         {
                             selfNodeData.ChildNodes.Add(hitNodeData);
@@ -146,13 +149,13 @@ namespace GameMain
 
                         if (hit.transform.childCount >= 2)
                         {
-                            hit.transform.GetChild(1).gameObject.SetActive(true);
+                            hit.transform.GetChild(1).gameObject.SetActive(true);//启动缠绕
                             GameEntry.Sound.PlaySound(10009);
                         }
                         GameEntry.Utils.Blood -= (int)cost;
                         GameEntry.Utils.lineCost = 0;
                         GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(0,false));
-                        GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Dynamic));
+                        GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Static));
                     }
                     else
                     {
@@ -190,7 +193,7 @@ namespace GameMain
             HideLineEventArgs ne = (HideLineEventArgs)e;
             if (mLineState == LineState.Connect)
                 return;
-            GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Dynamic));
+            GameEntry.Event.FireNow(this,SetRigidbodyTypeEventArgs.Create(RigidbodyType2D.Static));
             GameEntry.Utils.lineCost = 0;
             GameEntry.Event.FireNow(this,ShowTipsEventArgs.Create(0,false));
             GameEntry.Utils.dragLine = false;

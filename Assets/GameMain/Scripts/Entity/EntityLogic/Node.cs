@@ -2,15 +2,17 @@ using GameMain;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameFramework.DataTable;
 
 public class Node : Entity
 {
-    private NodeData m_Data = null;
+    public NodeData NodeData { get; set; } = null;
+    public BaseNodeComponent Component { get; set; } = null;
 
     protected override void OnShow(object userData)
     {
         base.OnShow(userData);
-        m_Data = userData as NodeData;
+        NodeData = userData as NodeData;
         AttachType();
     }
     /// <summary>
@@ -19,7 +21,7 @@ public class Node : Entity
     /// <param name="userData"></param>
     public void SwitchType(object userData)
     {
-        m_Data = userData as NodeData;
+        NodeData = userData as NodeData;
         GameEntry.Entity.DetachChildEntities(this.Id);
         AttachType();
     }
@@ -28,13 +30,21 @@ public class Node : Entity
     /// </summary>
     public void AttachType()
     {
-        if (m_Data == null)
+        if (NodeData == null)
         {
             UnityGameFramework.Runtime.Log.Error("NodeData object data is invalid.");
             return;
         }
-        ComponentData data = new ComponentData(GameEntry.Entity.GenerateSerialId(), 10002, this.Id, m_Data);
-        switch (m_Data.NodeType)
+        int entityId = GameEntry.Entity.GenerateSerialId();
+        IDataTable<DRNode> dtNode = GameEntry.DataTable.GetDataTable<DRNode>();
+        DRNode drNode = dtNode.GetDataRow((int)NodeData.NodeType);
+        if (drNode == null)
+        {
+
+            return;
+        }
+        ComponentData data = new ComponentData(entityId, 10002, this.Id, NodeData);
+        switch (NodeData.NodeType)
         {
             case NodeType.Unknown:
                 break;
@@ -59,6 +69,16 @@ public class Node : Entity
             case NodeType.ClearNode:
                 GameEntry.Entity.ShowClearNode(data);
                 break;
+            case NodeType.TreeNode:
+                GameEntry.Entity.ShowTreeNode(data);
+                break;
+            case NodeType.BoomNode:
+                GameEntry.Entity.ShowBoomNode(data);
+                break;
+            case NodeType.LeafNode:
+                GameEntry.Entity.ShowLeafNode(data);
+                break;
         }
+        ///实体创建有加载时间，获取写在被生成体上，大坑！
     }
 }

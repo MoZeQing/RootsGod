@@ -19,12 +19,15 @@ namespace GameMain
         {
             base.OnInit(userData);
             m_Data = userData as ComponentData;
+            this.transform.parent.GetComponent<Node>().Component = this;
+
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[8];
             m_NodeData.NodeType = NodeType.CenterNode;
             m_NodeData.NodeState = NodeState.InActive;
+            transform.parent.gameObject.tag = "Player";
         }
         //private void Start()
         //{

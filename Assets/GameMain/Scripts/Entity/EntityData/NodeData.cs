@@ -37,6 +37,11 @@ namespace GameMain
         /// </summary>
         public bool Connectable { get; set; }
 
+        /// <summary>
+        /// 是否已经连接
+        /// </summary>
+        public bool IsConnect { get; set; }
+
         public float Total
         {
             get;

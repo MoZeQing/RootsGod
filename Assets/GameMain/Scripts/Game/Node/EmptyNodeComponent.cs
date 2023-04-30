@@ -9,8 +9,14 @@ namespace GameMain
 {
     public class EmptyNodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
-        [SerializeField] private int mCostValue = 0;
+        [SerializeField] private int mTotal = 0;
+        [SerializeField] private int mIncome = 0;
+        [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
+        [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private GameObject mBoomProgress = null;
+        [SerializeField] private GameObject mBoom = null;
+        [SerializeField] private float mLerpTime = 0.5f;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
@@ -24,6 +30,8 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            this.transform.parent.GetComponent<Node>().Component = this;
+
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[6];
             m_NodeData.NodeType = NodeType.EmptyNode;
@@ -32,6 +40,25 @@ namespace GameMain
 
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
+
+            mFrame = transform.Find("NodeFrame").gameObject;
+            mFrame.SetActive(m_NodeData.Select);
+
+            mProgress = transform.Find("jingdutiao1").gameObject;
+            mProgress.SetActive(m_NodeData.Select);
+
+            mBoomProgress = transform.Find("boomjingdutiao1").gameObject;
+            mBoomProgress.SetActive(m_NodeData.Select);
+
+            m_NodeData.Costable = false;
+            m_NodeData.Movable = false;
+            m_NodeData.Connectable = true;
+            m_NodeData.Total = mTotal;
+            m_NodeData.Income = mIncome;
+            m_NodeData.CostPersecond = mCostPerSecond;
+
+            IsConnect = true;
+            IsBoom = false;
         }
         //private void Start()
         //{

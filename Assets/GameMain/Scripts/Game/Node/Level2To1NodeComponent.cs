@@ -10,7 +10,14 @@ namespace GameMain
     public class Level2To1NodeComponent : BaseNodeComponent, IPointerDownHandler,IPointerUpHandler
     {
         [SerializeField] private int mMaxPower = 3;
+        [SerializeField] private int mTotal = 0;
+        [SerializeField] private int mIncome = 0;
+        [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
+        [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private GameObject mBoomProgress = null;
+        [SerializeField] private GameObject mBoom = null;
+        [SerializeField] private float mLerpTime = 0.5f;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private SpriteRenderer m_SpriteRenderer = null;
@@ -28,6 +35,8 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            this.transform.parent.GetComponent<Node>().Component = this;
+
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[3];
             m_NodeData.NodeType = NodeType.Level2To1Node;
@@ -37,12 +46,21 @@ namespace GameMain
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
 
-            //m_NodeData.Costable = false;
-            //m_NodeData.Movable = false;
-            //m_NodeData.Connectable = true;
-            //m_NodeData.Total = 100;
-            //m_NodeData.Income = 0;
-            //m_NodeData.CostPersecond = 1;
+            mFrame = transform.Find("NodeFrame").gameObject;
+            mFrame.SetActive(m_NodeData.Select);
+
+            mProgress = transform.Find("jingdutiao1").gameObject;
+            mProgress.SetActive(m_NodeData.Select);
+
+            mBoomProgress = transform.Find("boomjingdutiao1").gameObject;
+            mBoomProgress.SetActive(m_NodeData.Select);
+
+            m_NodeData.Costable = false;
+            m_NodeData.Movable = false;
+            m_NodeData.Connectable = true;
+            m_NodeData.Total = 100;
+            m_NodeData.Income = 0;
+            m_NodeData.CostPersecond = 1;
             m_IsAdd = false;
         }
         //private void Start()

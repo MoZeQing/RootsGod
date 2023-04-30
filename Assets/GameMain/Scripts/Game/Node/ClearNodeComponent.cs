@@ -24,6 +24,8 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            this.transform.parent.GetComponent<Node>().Component = this;
+
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[4];
             m_NodeData.NodeType = NodeType.ClearNode;

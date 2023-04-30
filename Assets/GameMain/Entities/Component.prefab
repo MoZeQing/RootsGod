@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6153436467192720009}
   - component: {fileID: 2466286034799805390}
-  m_Layer: 0
-  m_Name: jingdutiao (1)
+  m_Layer: 6
+  m_Name: jingdutiao1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,10 +25,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305682490449277061}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 0.14999999}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0.14999999}
   m_Children: []
   m_Father: {fileID: 3942748856784335309}
+  m_RootOrder: 1
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2466286034799805390
@@ -94,7 +95,7 @@ GameObject:
   - component: {fileID: 1043161078513473635}
   - component: {fileID: 3509346601603119322}
   - component: {fileID: -4738610930193670210}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Component
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +128,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 581234826863694573}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -137,7 +138,7 @@ Rigidbody2D:
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!212 &3509346601603119322
@@ -201,7 +202,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -215,7 +216,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!1 &2123449443700309029
 GameObject:
@@ -371,7 +372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8572423237804530395}
   - component: {fileID: 7392181449034137471}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: jingdutiao
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -386,8 +387,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5692847440410779550}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 0.14999999}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0.14999999}
   m_Children: []
   m_Father: {fileID: 3942748856784335309}
   m_RootOrder: 0

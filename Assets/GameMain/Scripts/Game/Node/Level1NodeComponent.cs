@@ -15,6 +15,7 @@ namespace GameMain
         [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
         [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private GameObject mBoomProgress = null;
         [SerializeField] private float mLerpTime = 0.5f;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -27,6 +28,9 @@ namespace GameMain
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private Rigidbody2D m_Rigidbody2D = null;
         private bool m_IsAdd = false;
+        private float mboomTime = 2f;
+        private float m_boomTime = 2f;
+        private float mboomSpeed = 1f;
         private bool m_IsFire = false;
         private SpriteRenderer m_SpriteRenderer = null;
         private Color32 m_Color32 = new Color32(176, 176, 176, 255);
@@ -37,6 +41,7 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            transform.parent.GetComponent<Node>().Component = this;
 
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[0];
@@ -50,8 +55,11 @@ namespace GameMain
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
 
-            mProgress = transform.Find("jindutiao1").gameObject;
-            mProgress.SetActive(true);
+            mProgress = transform.Find("jingdutiao1").gameObject;
+            mProgress.SetActive(m_NodeData.Select);
+
+            mBoomProgress = transform.Find("boomjingdutiao1").gameObject;
+            mBoomProgress.SetActive(m_NodeData.Select);
 
             m_NodeData.Costable = false;
             m_NodeData.Movable = false;
@@ -60,13 +68,11 @@ namespace GameMain
             m_NodeData.Income = mIncome;
             m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
-        }
-        
-        private void OnEnable()
-        {
-            GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-            GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
->>>>>>> parent of 4c875e3a (Update Creep)
+            m_IsDead = false;
+            m_ZoneScale = 0;
+
+            IsConnect = true;
+            IsBoom = false;
         }
 
         //private void Start()
@@ -88,31 +94,31 @@ namespace GameMain
         //    m_IsAdd = false;
         //}
 
-        protected override void OnShow(object userData)
+        //protected override void OnShow(object userData)
+        //{
+        //    base.OnShow(userData);
+        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
+        //    GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
+        //}
+
+        //protected override void OnHide(bool isShutdown, object userData)
+        //{
+        //    base.OnHide(isShutdown, userData);
+        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
+        //    GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
+        //}
+
+        private void OnEnable()
         {
-            base.OnShow(userData);
             GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
             GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
         }
 
-        protected override void OnHide(bool isShutdown, object userData)
+        private void OnDisable()
         {
-            base.OnHide(isShutdown, userData);
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
             GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
         }
-
-        //private void OnEnable()
-        //{
-        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
-        //}
-
-        //private void OnDisable()
-        //{
-        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId,SetRigidType);
-        //}
 
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
@@ -126,7 +132,32 @@ namespace GameMain
             //         m_NodeData.IsPhysic = false;
             //     }
             // }
-            
+            if (!IsConnect)
+            {
+                return;
+            }
+            if (IsBoom)
+            {
+                mBoomProgress.SetActive(true);
+                mBoomProgress.transform.SetLocalScaleX(mboomTime / m_boomTime);//
+                Debug.Log(mboomTime / m_boomTime);
+                mboomTime -= mboomSpeed * Time.deltaTime;
+                if (mboomTime <= 0)
+                {
+                    IsConnect = false;
+                    IsBoom = false;
+                    //���ɱ�ը����
+                    GameEntry.Entity.ShowAreaBoom(new ComponentData(GameEntry.Entity.GenerateSerialId(), 10003, this.Id, m_NodeData)
+                    {
+                        Position = this.transform.position,
+                        Scale = new Vector3(2f, 2f, 1f)
+                    });
+                    //mBoom
+                    RemoveNode();
+                    //���ű�ը����
+                    SetConnect(false);
+                }
+            }
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
@@ -259,7 +290,47 @@ namespace GameMain
                 }
             }
         }
-        
+
+        public override void RemoveNode()
+        {
+            foreach (NodeData parent in m_NodeData.ParentNodes)
+            {
+                if (GameEntry.Utils.Lines.ContainsKey(new ConnectPair(GameEntry.Entity.GetEntity(parent.Id).transform, transform.parent)))
+                {
+                    GameEntry.Entity.GetEntity(GameEntry.Utils.Lines[new ConnectPair(GameEntry.Entity.GetEntity(parent.Id).transform, transform.parent)].Id).gameObject.SetActive(false);
+                }
+                parent.ChildNodes.Remove(m_NodeData);
+            }
+            foreach (NodeData child in m_NodeData.ChildNodes)
+            {
+                if (GameEntry.Utils.Lines.ContainsKey(new ConnectPair(transform.parent, GameEntry.Entity.GetEntity(child.Id).transform)))
+                {
+                    GameEntry.Entity.GetEntity(GameEntry.Utils.Lines[new ConnectPair(transform.parent, GameEntry.Entity.GetEntity(child.Id).transform)].Id).gameObject.SetActive(false);
+                }
+                child.ParentNodes.Remove(m_NodeData);
+                Node node = GameEntry.Entity.GetEntity(child.Id).GetComponent<Node>();
+                node.Component.SetConnect(false);
+            }
+            this.gameObject.SetActive(false);
+        }
+
+        public override void SetConnect(bool flag)
+        {
+            foreach (NodeData parent in m_NodeData.ParentNodes)
+            {
+                if (GameEntry.Entity.GetEntity(parent.Id).GetComponent<Node>().Component.IsConnect)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            IsConnect = flag;
+            foreach (NodeData child in m_NodeData.ChildNodes)
+            {
+                GameEntry.Entity.GetEntity(child.Id).GetComponent<Node>().Component.SetConnect(flag);
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             Line line = null;
