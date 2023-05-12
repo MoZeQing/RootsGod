@@ -11,23 +11,23 @@ namespace GameMain
 {
     public class Level1NodeComponent : BaseNodeComponent, IPointerDownHandler
     {
-        [SerializeField] private int mTotal = 0;
-        [SerializeField] private int mIncome = 0;
-        [SerializeField] private int mCostPerSecond = 0;
+        [SerializeField] private int mTotal = 0;//资源总量
+        [SerializeField] private int mIncome = 0;//
+        [SerializeField] private int mCostPerSecond = 0;//获取资源的效率
         [SerializeField] private GameObject mFrame = null;
         [SerializeField] private GameObject mProgress = null;
         [SerializeField] private float mLerpTime = 0.5f;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
-        private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
+        private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();//相邻节点
         private Rigidbody2D m_Rigidbody2D = null;
-        private bool m_IsAdd = false;
+        private bool m_IsAdd = false;//是否在增加资源
         private bool m_IsFire = false;
         private SpriteRenderer m_SpriteRenderer = null;
 
-        private bool m_IsDead = false;
-        private float m_ZoneScale = 0;
-        [SerializeField] private float mMaxZoneScale = 5.0f;
+        private bool m_IsDead = false;//是否死亡
+        private float m_ZoneScale = 0;//腐败的范围
+        [SerializeField] private float mMaxZoneScale = 5.0f;//最大的腐败范围
 
         private Color32 m_Color32 = new Color32(176, 176, 176, 255);
 
@@ -53,12 +53,6 @@ namespace GameMain
             mProgress = transform.Find("jindutiao1").gameObject;
             mProgress.SetActive(true);
 
-            m_NodeData.Costable = false;
-            m_NodeData.Movable = false;
-            m_NodeData.Connectable = true;
-            m_NodeData.Total = mTotal;
-            m_NodeData.Income = mIncome;
-            m_NodeData.CostPersecond = mCostPerSecond;
             m_IsAdd = false;
             m_IsDead = false;
             m_ZoneScale = 0;
@@ -112,16 +106,6 @@ namespace GameMain
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-            // if (m_NodeData.IsPhysic)
-            // {
-            //     m_NodeData.Connectable = false;
-            //     if (m_Rigidbody2D.velocity.magnitude <= 0.2f)
-            //     {
-            //         Invoke(nameof(SetRigid),0.5f);
-            //         m_NodeData.IsPhysic = false;
-            //     }
-            // }
-
             if (m_NodeData.Total <= 0)
             {
                 m_NodeData.Total = 0;
@@ -134,7 +118,6 @@ namespace GameMain
             mProgress.transform.SetLocalScaleX(1 - (1 - m_NodeData.Total / mTotal));
             //Debug.Log(m_NodeData.Total);
             
-            m_NodeData.NodeType = NodeType.BlockingNode;
             if (!m_IsAdd)
             {
                 GameEntry.Event.FireNow(this, AddIncomeEventArgs.Create(m_NodeData.Income));

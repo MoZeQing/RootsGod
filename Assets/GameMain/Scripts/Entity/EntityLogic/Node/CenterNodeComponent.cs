@@ -26,16 +26,6 @@ namespace GameMain
             m_NodeData.NodeType = NodeType.CenterNode;
             m_NodeData.NodeState = NodeState.InActive;
         }
-        //private void Start()
-        //{
-        //    m_NodeData = transform.GetComponent<NodeData>();
-        //    m_NodeData.NodeType = NodeType.CenterNode;
-        //    m_NodeData.NodeState = NodeState.InActive;
-        //    m_NodeData.Select = false;
-        //    m_NodeData.Costable = false;
-        //    m_NodeData.Movable = false;
-        //    m_NodeData.Connectable = true;
-        //}
 
         protected override void OnShow(object userData)
         {

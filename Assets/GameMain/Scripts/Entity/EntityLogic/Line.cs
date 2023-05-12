@@ -105,10 +105,8 @@ namespace GameMain
                             if (GameEntry.Utils.ConnectPairs[connectPair])
                                 return;
                         }
-                        var selfNodeData = m_Data.Self.GetComponent<NodeData>();
-                        var hitNodeData = hit.transform.GetComponent<NodeData>();
-                        if (hitNodeData.NodeType == NodeType.CardPackage)
-                            return;
+                        var selfNodeData = m_Data.Self.parent.GetComponent<Node>().NodeData;
+                        var hitNodeData = hit.transform.parent.GetComponent<Node>().NodeData;
 
                         m_LineRenderer.SetPosition(1,hit.transform.position);
                         mLineState = LineState.Connect;
@@ -116,6 +114,8 @@ namespace GameMain
                         GameEntry.Utils.dragLine = false;
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(m_Data.Self, hit.transform), true);
                         GameEntry.Utils.ConnectPairs.Add(new ConnectPair(hit.transform, m_Data.Self), true);
+                        GameEntry.Utils.Lines.Add(new ConnectPair(m_Data.Self, hit.transform), m_Data);
+                        GameEntry.Utils.Lines.Add(new ConnectPair(hit.transform, m_Data.Self), m_Data);
                         if (!GameEntry.Utils.LinePairs.ContainsKey(hit.transform))
                         {
                             GameEntry.Utils.LinePairs.Add(hit.transform,true);

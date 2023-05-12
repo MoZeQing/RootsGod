@@ -21,7 +21,20 @@ namespace GameMain
         private Vector3 m_MousePositionInWorld = Vector3.zero;
         private bool m_Follow = false;
         private SpriteRenderer m_SpriteRenderer = null;
-        private bool Select = false;
+
+        private void Start()
+        {
+            //m_NodeData.NodeType = NodeType.CardPackage;
+            //m_NodeData.NodeState = NodeState.Active;
+            //m_NodeData.Select = false;
+            //mFrame.SetActive(m_NodeData.Select);
+            //m_NodeData.Costable = false;
+            //m_NodeData.Movable = false;
+            //m_NodeData.Connectable = false;
+            //m_NodeData.Total = 0;
+            //m_NodeData.Income = 0;
+            //m_NodeData.CostPersecond = 1;
+        }
 
         protected override void OnShow(object userData)
         {

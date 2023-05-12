@@ -5,7 +5,17 @@ using UnityEngine;
 
 public class Node : Entity
 {
-    private NodeData m_Data = null;
+    private NodeData m_Data;
+
+    public NodeData NodeData
+    {
+        get
+        {
+            return m_Data;
+        }
+    }
+
+    public BaseNodeComponent Component { get; set; }
 
     protected override void OnShow(object userData)
     {
@@ -33,6 +43,7 @@ public class Node : Entity
             UnityGameFramework.Runtime.Log.Error("NodeData object data is invalid.");
             return;
         }
+
         ComponentData data = new ComponentData(GameEntry.Entity.GenerateSerialId(), 10002, this.Id, m_Data);
         switch (m_Data.NodeType)
         {

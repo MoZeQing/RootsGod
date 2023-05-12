@@ -35,6 +35,7 @@ namespace GameMain
     public class UtilsComponent : GameFrameworkComponent
     {
         public int startBlood = 100;
+        public Dictionary<ConnectPair, LineData> Lines = new Dictionary<ConnectPair, LineData>();
         public Dictionary<ConnectPair, bool> ConnectPairs = new Dictionary<ConnectPair, bool>();
         public Dictionary<Transform, bool> LinePairs = new Dictionary<Transform, bool>();
         public Material[] materials = null;

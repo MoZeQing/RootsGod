@@ -1,16 +1,19 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework.Event;
 using UnityEngine;
+using System;
+using GameFramework;
+using GameFramework.Event;
 using UnityEngine.EventSystems;
 
 namespace GameMain
 {
-    public class BlockingNodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class LeafNode : BaseNodeComponent, IPointerDownHandler
     {
         [SerializeField] private int mCostValue = 0;
         [SerializeField] private GameObject mFrame = null;
+        [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private GameObject mBoomProgress = null;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
@@ -30,55 +33,33 @@ namespace GameMain
 
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
-        }
-        //private void Start()
-        //{
-        //    m_NodeData = transform.GetComponent<NodeData>();
-        //    m_NodeData.NodeType = NodeType.BlockingNode;
-        //    m_NodeData.NodeState = NodeState.Active;
-        //    m_NodeData.Select = false;
-        //    mFrame.SetActive(m_NodeData.Select);
-        //    m_NodeData.Costable = false;
-        //    m_NodeData.Movable = false;
-        //    m_NodeData.Connectable = false;
-        //    m_NodeData.Total = 0;
-        //    m_NodeData.Income = 0;
-        //    m_NodeData.CostPersecond = 1;
-        //}
 
-        protected override void OnShow(object userData)
+            mProgress = transform.Find("jingdutiao1").gameObject;
+            mProgress.SetActive(m_NodeData.Select);
+
+            mBoomProgress = transform.Find("boomjingdutiao1").gameObject;
+            mBoomProgress.SetActive(m_NodeData.Select);
+        }
+
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
-            base.OnShow(userData);
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+
+        }
+
+        private void OnEnable()
+        {
             GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
             GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId, AddParent);
             GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId, AddChild);
         }
 
-        protected override void OnHide(bool isShutdown, object userData)
+        private void OnDisable()
         {
-            base.OnHide(isShutdown, userData);
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
             GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId, AddParent);
             GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId, AddChild);
         }
-        //private void OnEnable()
-        //{
-        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId,AddParent);
-        //    GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId,AddChild);
-        //}
-
-        //private void OnDisable()
-        //{
-        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId,AddParent);
-        //    GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId,AddChild);
-        //}
-
-        //private void Update()
-        //{
-            
-        //}
 
         private void AddParent(object sender, GameEventArgs e)
         {
@@ -94,7 +75,7 @@ namespace GameMain
                     m_NodeData.NodeState = NodeState.InActive;
                 }
             }
-            
+
         }
 
         private void AddChild(object sender, GameEventArgs e)
@@ -112,19 +93,19 @@ namespace GameMain
                 }
             }
         }
-        
+
         private void SetSelect(object sender, GameEventArgs e)
         {
             SetSelectEventArgs ne = (SetSelectEventArgs)e;
             m_NodeData.Select = ne.Select;
-            //mFrame.SetActive(m_NodeData.Select);
+            mFrame.SetActive(m_NodeData.Select);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             switch (m_NodeData.NodeState)
             {
-                case NodeState.Undefined:
+                case NodeState.Unknown:
                     break;
                 case NodeState.InActive:
                     break;
@@ -133,14 +114,13 @@ namespace GameMain
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             if (!m_NodeData.Select)
             {
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
-                    GameEntry.Event.FireNow(this,SetSelectEventArgs.Create(false));
+                    GameEntry.Event.FireNow(this, SetSelectEventArgs.Create(false));
                     m_NodeData.Select = true;
-                    
                     mFrame.SetActive(m_NodeData.Select);
                 }
             }
@@ -153,9 +133,49 @@ namespace GameMain
                     if (GameEntry.Utils.dragLine)
                         return;
                     GameEntry.Sound.PlaySound(10010);
-                    var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
+                    var lineData = new LineData(GameEntry.Entity.GenerateSerialId(), 10000, transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }
+            }
+        }
+
+        public override void RemoveNode()
+        {
+            foreach (NodeData parent in m_NodeData.ParentNodes)
+            {
+                if (GameEntry.Utils.Lines.ContainsKey(new ConnectPair(GameEntry.Entity.GetEntity(parent.Id).transform, transform.parent)))
+                {
+                    GameEntry.Entity.GetEntity(GameEntry.Utils.Lines[new ConnectPair(GameEntry.Entity.GetEntity(parent.Id).transform, transform.parent)].Id).gameObject.SetActive(false);
+                }
+                parent.ChildNodes.Remove(m_NodeData);
+            }
+            foreach (NodeData child in m_NodeData.ChildNodes)
+            {
+                if (GameEntry.Utils.Lines.ContainsKey(new ConnectPair(transform.parent, GameEntry.Entity.GetEntity(child.Id).transform)))
+                {
+                    GameEntry.Entity.GetEntity(GameEntry.Utils.Lines[new ConnectPair(transform.parent, GameEntry.Entity.GetEntity(child.Id).transform)].Id).gameObject.SetActive(false);
+                }
+                child.ParentNodes.Remove(m_NodeData);
+                Node node = GameEntry.Entity.GetEntity(child.Id).GetComponent<Node>();
+                node.Component.SetConnect(false);
+            }
+            this.gameObject.SetActive(false);
+        }
+
+        public override void SetConnect(bool flag)
+        {
+            foreach (NodeData parent in m_NodeData.ParentNodes)
+            {
+                if (GameEntry.Entity.GetEntity(parent.Id).GetComponent<Node>().Component.IsConnect)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            IsConnect = flag;
+            foreach (NodeData child in m_NodeData.ChildNodes)
+            {
+                GameEntry.Entity.GetEntity(child.Id).GetComponent<Node>().Component.SetConnect(flag);
             }
         }
 
@@ -166,7 +186,7 @@ namespace GameMain
                 return;
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
-            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(false));
+            GameEntry.Event.FireNow(this, LineVaildEventArgs.Create(false));
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -176,7 +196,7 @@ namespace GameMain
                 return;
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
-            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
+            GameEntry.Event.FireNow(this, LineVaildEventArgs.Create(true));
         }
     }
 }

@@ -100,7 +100,32 @@ namespace GameMain
 
         public static void ShowCardPackage(this EntityComponent entityComponent, ComponentData data)
         {
-            entityComponent.ShowEntity(typeof(CardPackage), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+            //entityComponent.ShowEntity(typeof(CardPackage), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowBoomNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(BoomNode), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowTreeNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(TreeNode), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowLeafNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(LeafNode), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowDogNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(DogNode), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+        public static void ShowKennelNode(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(KennelNode), "Node", Constant.AssetPriority.MyAircraftAsset, data);
+        }
+
+        public static void ShowBoomArea(this EntityComponent entityComponent, ComponentData data)
+        {
+            entityComponent.ShowEntity(typeof(BoomArea), "Node", Constant.AssetPriority.MyAircraftAsset, data);
         }
 
         public static void ShowEffect(this EntityComponent entityComponent, EffectData data)

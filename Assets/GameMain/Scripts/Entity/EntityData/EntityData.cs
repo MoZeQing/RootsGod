@@ -23,6 +23,9 @@ namespace GameMain
         private Vector3 m_Position = Vector3.zero;
 
         [SerializeField]
+        private Vector3 m_Scale = Vector3.one;
+
+        [SerializeField]
         private Quaternion m_Rotation = Quaternion.identity;
 
         public EntityData(int entityId, int typeId)
@@ -65,6 +68,18 @@ namespace GameMain
             set
             {
                 m_Position = value;
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get
+            {
+                return m_Scale;
+            }
+            set
+            {
+                m_Scale = value;
             }
         }
 

@@ -67,7 +67,7 @@ namespace GameMain
             Name = Utility.Text.Format("[Entity {0}]", Id);
             CachedTransform.localPosition = m_EntityData.Position;
             CachedTransform.localRotation = m_EntityData.Rotation;
-            CachedTransform.localScale = Vector3.one;
+            CachedTransform.localScale = m_EntityData.Scale;
         }
 
 #if UNITY_2017_3_OR_NEWER

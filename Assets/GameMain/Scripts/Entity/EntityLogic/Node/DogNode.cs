@@ -1,20 +1,34 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework.Event;
 using UnityEngine;
+using DG.Tweening;
+using GameFramework.Event;
 using UnityEngine.EventSystems;
+using System;
 
 namespace GameMain
 {
-    public class BlockingNodeComponent : BaseNodeComponent, IPointerDownHandler
+    public class DogNode : BaseNodeComponent, IPointerDownHandler
     {
-        [SerializeField] private int mCostValue = 0;
+        [SerializeField] private int mTotal = 0;
+        [SerializeField] private int mIncome = 0;
+        [SerializeField] private int mCostPerSecond = 0;
         [SerializeField] private GameObject mFrame = null;
+        [SerializeField] private GameObject mProgress = null;
+        [SerializeField] private float mLerpTime = 0.5f;
         private ComponentData m_Data = null;
         private NodeData m_NodeData = null;
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
+        private Rigidbody2D m_Rigidbody2D = null;
+        private bool m_IsAdd = false;
+        private bool m_IsFire = false;
+        private bool m_Alive = false;
         private SpriteRenderer m_SpriteRenderer = null;
+        private Color32 m_Color32 = new Color32(176, 176, 176, 255);
+
+        [SerializeField] private float mCD = 2f;//生成节点的方法
+        private bool mAlive = false;//节点是否正在运行
+        private List<Vector3> m_leafNodes = new List<Vector3>();
 
         protected override void OnInit(object userData)
         {
@@ -22,63 +36,50 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+            this.transform.parent.GetComponent<Node>().Component = this;
+
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
-            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[7];
-            m_NodeData.NodeType = NodeType.BlockingNode;
-            m_NodeData.NodeState = NodeState.Active;
+            m_SpriteRenderer.sprite = GameEntry.Utils.sprites[9];
+            m_SpriteRenderer.color = Color.red;
+
+            m_Rigidbody2D = transform.GetComponent<Rigidbody2D>();
+            m_NodeData.NodeType = NodeType.TreeNode;
             m_NodeData.Select = false;
 
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
-        }
-        //private void Start()
-        //{
-        //    m_NodeData = transform.GetComponent<NodeData>();
-        //    m_NodeData.NodeType = NodeType.BlockingNode;
-        //    m_NodeData.NodeState = NodeState.Active;
-        //    m_NodeData.Select = false;
-        //    mFrame.SetActive(m_NodeData.Select);
-        //    m_NodeData.Costable = false;
-        //    m_NodeData.Movable = false;
-        //    m_NodeData.Connectable = false;
-        //    m_NodeData.Total = 0;
-        //    m_NodeData.Income = 0;
-        //    m_NodeData.CostPersecond = 1;
-        //}
 
-        protected override void OnShow(object userData)
+            mProgress = transform.Find("jindutiao1").gameObject;
+            mProgress.SetActive(true);
+
+            m_IsAdd = false;
+        }
+
+        private void OnEnable()
         {
-            base.OnShow(userData);
             GameEntry.Event.Subscribe(SetSelectEventArgs.EventId, SetSelect);
-            GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId, AddParent);
-            GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId, AddChild);
+            GameEntry.Event.Subscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
         }
 
-        protected override void OnHide(bool isShutdown, object userData)
+        private void OnDisable()
         {
-            base.OnHide(isShutdown, userData);
             GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId, SetSelect);
-            GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId, AddParent);
-            GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId, AddChild);
+            GameEntry.Event.Unsubscribe(SetRigidbodyTypeEventArgs.EventId, SetRigidType);
         }
-        //private void OnEnable()
-        //{
-        //    GameEntry.Event.Subscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Subscribe(AddParentNodeEventArgs.EventId,AddParent);
-        //    GameEntry.Event.Subscribe(AddChildNodeEventArgs.EventId,AddChild);
-        //}
 
-        //private void OnDisable()
-        //{
-        //    GameEntry.Event.Unsubscribe(SetSelectEventArgs.EventId,SetSelect);
-        //    GameEntry.Event.Unsubscribe(AddParentNodeEventArgs.EventId,AddParent);
-        //    GameEntry.Event.Unsubscribe(AddChildNodeEventArgs.EventId,AddChild);
-        //}
+        private float _time = 0f;
 
-        //private void Update()
-        //{
-            
-        //}
+        protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+            if (m_Alive)
+            {
+                Vector3 targetPos;
+                //查找最近的已经被连接的节点，没有就先响player移动
+                Vector3 playerPos = GameObject.FindWithTag("Player").transform.position;
+
+            }
+        }
 
         private void AddParent(object sender, GameEventArgs e)
         {
@@ -94,7 +95,7 @@ namespace GameMain
                     m_NodeData.NodeState = NodeState.InActive;
                 }
             }
-            
+
         }
 
         private void AddChild(object sender, GameEventArgs e)
@@ -112,19 +113,32 @@ namespace GameMain
                 }
             }
         }
-        
+
         private void SetSelect(object sender, GameEventArgs e)
         {
             SetSelectEventArgs ne = (SetSelectEventArgs)e;
             m_NodeData.Select = ne.Select;
-            //mFrame.SetActive(m_NodeData.Select);
+            mFrame.SetActive(m_NodeData.Select);
+        }
+
+        private void SetRigidType(object sender, GameEventArgs e)
+        {
+            SetRigidbodyTypeEventArgs ne = (SetRigidbodyTypeEventArgs)e;
+            m_Rigidbody2D.bodyType = ne.Type;
+        }
+
+
+        private void SetRigid()
+        {
+            m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
+            m_NodeData.Connectable = true;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             switch (m_NodeData.NodeState)
             {
-                case NodeState.Undefined:
+                case NodeState.Unknown:
                     break;
                 case NodeState.InActive:
                     break;
@@ -133,14 +147,13 @@ namespace GameMain
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             if (!m_NodeData.Select)
             {
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
-                    GameEntry.Event.FireNow(this,SetSelectEventArgs.Create(false));
+                    GameEntry.Event.FireNow(this, SetSelectEventArgs.Create(false));
                     m_NodeData.Select = true;
-                    
                     mFrame.SetActive(m_NodeData.Select);
                 }
             }
@@ -148,12 +161,15 @@ namespace GameMain
             {
                 if (!GameEntry.Utils.LinePairs.ContainsKey(transform))
                     return;
+                if (!m_NodeData.Connectable)
+                    return;
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
                     if (GameEntry.Utils.dragLine)
                         return;
+                    m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
                     GameEntry.Sound.PlaySound(10010);
-                    var lineData = new LineData(GameEntry.Entity.GenerateSerialId(),10000,transform);
+                    var lineData = new LineData(GameEntry.Entity.GenerateSerialId(), 10000, transform);
                     GameEntry.Entity.ShowLine(lineData);
                 }
             }
@@ -166,7 +182,7 @@ namespace GameMain
                 return;
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
-            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(false));
+            GameEntry.Event.FireNow(this, LineVaildEventArgs.Create(false));
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -176,7 +192,8 @@ namespace GameMain
                 return;
             if (m_NodeData.NodeState == NodeState.InActive)
                 return;
-            GameEntry.Event.FireNow(this,LineVaildEventArgs.Create(true));
+            GameEntry.Event.FireNow(this, LineVaildEventArgs.Create(true));
         }
     }
 }
+

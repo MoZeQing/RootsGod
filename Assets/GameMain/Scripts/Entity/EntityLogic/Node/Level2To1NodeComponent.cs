@@ -17,7 +17,6 @@ namespace GameMain
         private List<BaseNodeComponent> m_ParentNodes = new List<BaseNodeComponent>();
         private bool m_IsAdd = false;
         private int m_curPower = 0;
-        //private int m_MaxPower = 3;
 
         private bool m_Follow = false;
         private Vector3 m_MousePositionInWorld = Vector3.zero;
@@ -28,21 +27,15 @@ namespace GameMain
             m_Data = userData as ComponentData;
             m_NodeData = m_Data.NodeData;
             GameEntry.Entity.AttachEntity(this, m_NodeData.Id);
+
             m_SpriteRenderer = transform.GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sprite = GameEntry.Utils.sprites[3];
-            m_NodeData.NodeType = NodeType.Level2To1Node;
+
             m_NodeData.NodeState = NodeState.InActive;
-            m_NodeData.Select = false;
 
             mFrame = transform.Find("NodeFrame").gameObject;
             mFrame.SetActive(m_NodeData.Select);
 
-            //m_NodeData.Costable = false;
-            //m_NodeData.Movable = false;
-            //m_NodeData.Connectable = true;
-            //m_NodeData.Total = 100;
-            //m_NodeData.Income = 0;
-            //m_NodeData.CostPersecond = 1;
             m_IsAdd = false;
         }
         //private void Start()
